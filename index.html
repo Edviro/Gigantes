@@ -582,6 +582,9 @@
             </div>
         </div>
 
+        <!-- Agregar este elemento -->
+        <div class="final-message" id="finalMessage">¡EL EVENTO HA COMENZADO!</div>
+
         <div class="social-media">
             <a href="#" target="_blank" class="social-link" id="instagram-link" title="Síguenos en Instagram">
                 <svg class="icon-instagram" viewBox="0 0 24 24">
@@ -602,7 +605,7 @@
         <div class="additional-info">
             <h3 class="info-title">Detalles del Evento</h3>
             <p class="info-content">
-                Prepárate para vivir una experiencia única que desafiará tus límites y te conectará con una comunidad de aventureros apasionados.
+                Prepárate para vivir una experiencia única que desafiará tus límites y te conectará con una comunidad de Conquistadores apasionados de la R4.
             </p>
             <div class="info-details">
                 <div class="detail-item">
@@ -643,38 +646,57 @@
         }
 
         // Función principal del contador
-        function updateCountdown() {
-            // Fecha objetivo: 22 de Junio 2025 a las 6:00 AM (hora local)
-            const targetDate = new Date('2025-06-22T06:00:00').getTime();
-            const now = new Date().getTime();
-            const difference = targetDate - now;
+        // Función principal del contador
+function updateCountdown() {
+    const targetDate = new Date('2025-06-22T06:00:00').getTime();
+    const now = new Date().getTime();
+    const difference = targetDate - now;
 
-            // Elementos del DOM
-            const daysElement = document.getElementById('days');
-            const hoursElement = document.getElementById('hours');
-            const minutesElement = document.getElementById('minutes');
-            const secondsElement = document.getElementById('seconds');
-            const countdownElement = document.getElementById('countdown');
-            const finalMessageElement = document.getElementById('finalMessage');
+    const daysElement = document.getElementById('days');
+    const hoursElement = document.getElementById('hours');
+    const minutesElement = document.getElementById('minutes');
+    const secondsElement = document.getElementById('seconds');
+    const countdownElement = document.getElementById('countdown');
+    const finalMessageElement = document.getElementById('finalMessage');
 
-            if (difference > 0) {
-                // Calcular tiempo restante
-                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+    if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-                // Actualizar elementos con formato de dos dígitos
-                daysElement.textContent = days.toString().padStart(2, '0');
-                hoursElement.textContent = hours.toString().padStart(2, '0');
-                minutesElement.textContent = minutes.toString().padStart(2, '0');
-                secondsElement.textContent = seconds.toString().padStart(2, '0');
-            } else {
-                // El evento ha comenzado o ya pasó
-                countdownElement.style.display = 'none';
-                finalMessageElement.style.display = 'block';
-            }
-        }
+        // Forzar actualización inmediata sin transiciones
+        if (daysElement) daysElement.textContent = days.toString().padStart(2, '0');
+        if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
+        if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
+        if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
+    } else {
+        if (countdownElement) countdownElement.style.display = 'none';
+        if (finalMessageElement) finalMessageElement.style.display = 'block';
+    }
+}
+
+// Inicializar la página cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', function () {
+    createParticles(); // Crea las partículas
+    updateCountdown(); // Actualiza el contador inicialmente
+
+    // Actualizar el contador cada segundo
+    setInterval(updateCountdown, 1000);
+
+    // Configura los enlaces
+    setupLinks();
+
+    // Efectos adicionales al hacer clic en las unidades de tiempo
+    document.querySelectorAll('.time-unit').forEach(unit => {
+        unit.addEventListener('click', function () {
+            this.style.transform = 'translateY(-10px) scale(1.1)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(0) scale(1)';
+            }, 300);
+        });
+    });
+});
 
         // Función para configurar enlaces con placeholders
         function setupLinks() {
