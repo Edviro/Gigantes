@@ -7,7 +7,7 @@
     <title>Corra con los Gigantes</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-
+    <link rel="stylesheet" href="carousel.css">
 </head>
 
 <body>
@@ -51,8 +51,36 @@
             </div>
         </div>
 
-        <!-- Agregar este elemento -->
+        <!-- Mensaje final cuando el contador llega a cero -->
         <div class="final-message" id="finalMessage">¡EL EVENTO HA COMENZADO!</div>
+
+        <!-- Nueva sección del carrusel -->
+        <section class="carousel-section">
+            <h2 class="carousel-title">ESPECIALIDADES A DESARROLLAR</h2>
+            <div class="carousel-container">
+                <button class="carousel-btn carousel-btn-prev" id="prevBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15,18 9,12 15,6"></polyline>
+                    </svg>
+                </button>
+                
+                <div class="carousel-wrapper">
+                    <div class="carousel-track" id="carouselTrack">
+                        <!-- Las tarjetas se agregarán dinámicamente desde JavaScript -->
+                    </div>
+                </div>
+                
+                <button class="carousel-btn carousel-btn-next" id="nextBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9,18 15,12 9,6"></polyline>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="carousel-indicators" id="carouselIndicators">
+                <!-- Los indicadores se agregarán dinámicamente -->
+            </div>
+        </section>
 
         <div class="social-media">
             <a href="#" target="_blank" class="social-link" id="instagram-link" title="Síguenos en Instagram">
@@ -67,10 +95,6 @@
                         d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
             </a>
-        </div>
-
-        <div class="final-message" id="finalMessage">
-            ¡Es Hora de Correr con los Gigantes!
         </div>
 
         <div class="additional-info">
@@ -106,6 +130,7 @@
     </section>
 
     <script src="script.js"></script>
+    <script src="carousel.js"></script>
 </body>
 
 </html>
