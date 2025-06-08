@@ -8,42 +8,48 @@ const carouselData = [
         logo: 'logosEspecialidades/01.png', // Reemplaza con tu logo real
         title: 'ALIVIO DEL HAMBRE (AD 001)',
         description: '" Descarga la ficha de desarollo para la especialidad "',
-        downloadLink: '#' // Reemplaza con el enlace real de descarga
+        downloadLink: '#', // Reemplaza con el enlace real de descarga,
+        target: '_blank',
     },
     {
         id: 2,
         logo: 'logosEspecialidades/02.png', // Reemplaza con tu logo real
         title: 'IMPRENTA (AP 010)',
         description: '" Descarga la ficha de desarollo para la especialidad "',
-        downloadLink: '#' // Reemplaza con el enlace real de descarga
+        downloadLink: 'https://drive.google.com/file/d/1F0-_LpN0LdShJB66iFigDlVBGh48agvj/view?usp=sharing' ,
+        target: '_blank',// Reemplaza con el enlace real de descarga
     },
     {
         id: 3,
         logo: 'logosEspecialidades/03.png', // Reemplaza con tu logo real
         title: 'ENVOLTORIO (HM 070)',
         description: '" Descarga la ficha de desarollo para la especialidad " (Exclusivamente SECRETARIOS de Unidad)',
-        downloadLink: '#' // Reemplaza con el enlace real de descarga
+        downloadLink: '#' ,// Reemplaza con el enlace real de descarga
+        target: '_blank',
     },
     {
         id: 4,
         logo: 'logosEspecialidades/04.png', // Reemplaza con tu logo real
         title: 'MARCADO DE BIBLIA (AM 019)',
         description: '" Descarga la ficha de desarollo para la especialidad (Exlusivamente CAPELLANES de Unidad) "',
-        downloadLink: '#' // Reemplaza con el enlace real de descarga
+        downloadLink: '#', // Reemplaza con el enlace real de descarga
+        target: '_blank',
     },
     {
         id: 5,
         logo: 'logosEspecialidades/05.png', // Reemplaza con tu logo real
         title: 'PRIMEROS AUXILIOS BÁSICO (CS 003)',
         description: '" Descarga la ficha de desarollo para la especialidad (Exclusivamente CAMILLEROS de unidad) "',
-        downloadLink: '#' // Reemplaza con el enlace real de descarga
+        downloadLink: '#', // Reemplaza con el enlace real de descarga
+        target: '_blank',
     },
     {
         id: 6,
         logo: 'logosEspecialidades/06.png', // Reemplaza con tu logo real
         title: 'ARTE DE TRENZAR (HM 040)',
         description: '" Descarga la ficha de desarollo para la especialidad (Exclusivamente HISTRION de unidad)"',
-        downloadLink: '#' // Reemplaza con el enlace real de descarga
+        downloadLink: '#' ,// Reemplaza con el enlace real de descarga
+        target: '_blank',
     }
 ];
 
