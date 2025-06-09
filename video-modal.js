@@ -1,368 +1,300 @@
-// ===== CONFIGURACIÓN DEL MODAL DE VIDEO =====
+// ===== CONFIGURACIÓN DEL MODAL DE VIDEO LOCAL =====
 
-// CONFIGURACIÓN - Cambia esta URL por tu video de Instagram
-const INSTAGRAM_VIDEO_CONFIG = {
-    // URL del post de Instagram (reemplaza con tu URL real)
-    url: 'https://www.instagram.com/reel/DKqePX_uxEN/?igsh=Y3pydzVwZmxmZ2t4',
-    // Alternativa: ID del post si lo tienes
-    postId: null,
-    // Configuración del embed
-    embedOptions: {
-        width: '100%',
-        height: '100%',
+// CONFIGURACIÓN - Cambia esta ruta por tu archivo de video
+const LOCAL_VIDEO_CONFIG = {
+    // Ruta del archivo de video (colócalo en tu carpeta del proyecto)
+    videoSrc: 'video/promocional.mp4', // Cambia por tu archivo
+    // Configuración del video
+    options: {
         autoplay: true,
-        muted: true, // Recomendado para autoplay
-    }
+        muted: false, // Cambiado a false para permitir el sonido
+        loop: false,
+        controls: false, // Usaremos controles personalizados
+        preload: 'metadata'
+    },
+    // Configuración del modal
+    autoShow: true, // Se muestra automáticamente al cargar la página
+    autoShowDelay: 1000, // Delay en ms antes de mostrar
+    autoClose: true, // Se cierra automáticamente al terminar el video
+    autoCloseDelay: 1000, // Delay antes de cerrar automáticamente
+    showOnlyOnce: true, // Solo se muestra una vez por sesión
+    enableKeyboardControls: true, // Controles con teclado (ESC, Space, etc.)
+    clickOutsideToClose: true // Cerrar al hacer clic fuera del video
 };
 
 // Variables globales
 let videoModal = null;
 let videoContainer = null;
 let closeButton = null;
+let videoElement = null;
+let progressContainer = null;
+let progressBar = null;
+let progressFill = null;
+let progressBuffer = null;
+let timeDisplay = null;
+let currentTimeSpan = null;
+let durationSpan = null;
+let autoPlayIndicator = null;
+let loadingElement = null;
+let overlay = null;
+
 let isVideoLoaded = false;
 let hasBeenShown = false;
-let instagramScriptLoaded = false;
 let autoCloseTimer = null;
+let progressUpdateInterval = null;
+let isModalVisible = false;
+let isDragging = false;
+let isInitialized = false;
 
-// ===== FUNCIONES PRINCIPALES =====
-
-/**
- * Extrae el ID del post desde una URL de Instagram
- * @param {string} url - URL del post de Instagram
- * @returns {string|null} - ID del post o null si no se puede extraer
- */
-function extractInstagramPostId(url) {
-    try {
-        // Patrones comunes de URLs de Instagram
-        const patterns = [
-            /instagram\.com\/p\/([A-Za-z0-9_-]+)/,
-            /instagram\.com\/reel\/([A-Za-z0-9_-]+)/,
-            /instagram\.com\/tv\/([A-Za-z0-9_-]+)/
-        ];
-        
-        for (const pattern of patterns) {
-            const match = url.match(pattern);
-            if (match && match[1]) {
-                return match[1];
-            }
-        }
-        
-        return null;
-    } catch (error) {
-        console.error('Error al extraer ID del post:', error);
-        return null;
-    }
-}
+// ===== FUNCIÓN DE INICIALIZACIÓN PRINCIPAL =====
 
 /**
- * Detecta si el contenido es vertical (Reels/Stories)
- * @param {string} url - URL del post de Instagram
- * @returns {boolean} - true si es contenido vertical
+ * Inicializa el modal de video
  */
-function isVerticalContent(url) {
-    return url.includes('/reel/') || url.includes('/stories/');
-}
-
-/**
- * Genera el HTML del embed de Instagram optimizado para contenido vertical
- * @param {string} postId - ID del post de Instagram
- * @param {boolean} isVertical - Si el contenido es vertical
- * @returns {string} - HTML del embed
- */
-function generateInstagramEmbed(postId, isVertical = false) {
-    if (!postId) {
-        console.error('No se proporcionó un ID de post válido');
-        return '<div class="video-loading">Error: URL de video no válida</div>';
-    }
+function initVideoModal() {
+    console.log('Inicializando modal de video...');
     
-    // URL completa del post
-    const postUrl = `https://www.instagram.com/p/${postId}/`;
-    
-    // Estilos optimizados para videos verticales
-    const containerStyle = isVertical ? 
-        'background:#000; border:0; border-radius:15px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 0; max-width:100%; max-height:80vh; padding:0; width:auto; height:auto; display:flex; justify-content:center; align-items:center;' :
-        'background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:100%; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);';
-    
-    // Embed usando el API de Instagram
-    return `
-        <blockquote class="instagram-media ${isVertical ? 'vertical-video' : ''}" 
-                    data-instgrm-captioned
-                    data-instgrm-permalink="${postUrl}"
-                    data-instgrm-version="14"
-                    style="${containerStyle}">
-            <div style="padding:${isVertical ? '8px' : '16px'};">
-                <div style="display:block; height:50px; margin:0 auto 12px; width:50px;">
-                    <svg width="50px" height="50px" viewBox="0 0 60 60" version="1.1" xmlns="https://www.w3.org/2000/svg">
-                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                            <g transform="translate(-511.000000, -20.000000)" fill="${isVertical ? '#ffffff' : '#000000'}">
-                                <g>
-                                    <path d="M556.869,30.41 C554.814,30.41 553.148,32.076 553.148,34.131 C553.148,36.186 554.814,37.852 556.869,37.852 C558.924,37.852 560.59,36.186 560.59,34.131 C560.59,32.076 558.924,30.41 556.869,30.41 M541,60.657 C535.114,60.657 530.342,55.887 530.342,50 C530.342,44.114 535.114,39.342 541,39.342 C546.887,39.342 551.658,44.114 551.658,50 C551.658,55.887 546.887,60.657 541,60.657 M541,33.886 C532.1,33.886 524.886,41.1 524.886,50 C524.886,58.899 532.1,66.113 541,66.113 C549.9,66.113 557.115,58.899 557.115,50 C557.115,41.1 549.9,33.886 541,33.886 M565.378,62.101 C565.244,65.022 564.756,66.606 564.346,67.663 C563.803,69.06 563.154,70.057 562.106,71.106 C561.058,72.155 560.06,72.803 558.662,73.347 C557.607,73.757 556.021,74.244 553.102,74.378 C549.944,74.521 548.997,74.552 541,74.552 C533.003,74.552 532.056,74.521 528.898,74.378 C525.979,74.244 524.393,73.757 523.338,73.347 C521.94,72.803 520.942,72.155 519.894,71.106 C518.846,70.057 518.197,69.06 517.654,67.663 C517.244,66.606 516.755,65.022 516.623,62.101 C516.479,58.943 516.448,57.996 516.448,50 C516.448,42.003 516.479,41.056 516.623,37.899 C516.755,34.978 517.244,33.391 517.654,32.338 C518.197,30.938 518.846,29.942 519.894,28.894 C520.942,27.846 521.94,27.196 523.338,26.654 C524.393,26.244 525.979,25.756 528.898,25.623 C532.057,25.479 533.004,25.448 541,25.448 C548.997,25.448 549.943,25.479 553.102,25.623 C556.021,25.756 557.607,26.244 558.662,26.654 C560.06,27.196 561.058,27.846 562.106,28.894 C563.154,29.942 563.803,30.938 564.346,32.338 C564.756,33.391 565.244,34.978 565.378,37.899 C565.522,41.056 565.552,42.003 565.552,50 C565.552,57.996 565.522,58.943 565.378,62.101 M570.82,37.631 C570.674,34.438 570.167,32.258 569.425,30.349 C568.659,28.377 567.633,26.702 565.965,25.035 C564.297,23.368 562.623,22.342 560.652,21.575 C558.743,20.834 556.562,20.326 553.369,20.18 C550.169,20.033 549.148,20 541,20 C532.853,20 531.831,20.033 528.631,20.18 C525.438,20.326 523.257,20.834 521.349,21.575 C519.376,22.342 517.703,23.368 516.035,25.035 C514.368,26.702 513.342,28.377 512.574,30.349 C511.834,32.258 511.326,34.438 511.181,37.631 C511.035,40.831 511,41.851 511,50 C511,58.147 511.035,59.17 511.181,62.369 C511.326,65.562 511.834,67.743 512.574,69.651 C513.342,71.625 514.368,73.296 516.035,74.965 C517.703,76.634 519.376,77.658 521.349,78.425 C523.257,79.167 525.438,79.673 528.631,79.82 C531.831,79.965 532.853,80.001 541,80.001 C549.148,80.001 550.169,79.965 553.369,79.82 C556.562,79.673 558.743,79.167 560.652,78.425 C562.623,77.658 564.297,76.634 565.965,74.965 C567.633,73.296 568.659,71.625 569.425,69.651 C570.167,67.743 570.674,65.562 570.82,62.369 C570.966,59.17 571,58.147 571,50 C571,41.851 570.966,40.831 570.82,37.631"></path>
-                                </g>
-                            </g>
-                        </g>
-                    </svg>
-                </div>
-                <div style="padding-top: 8px;">
-                    <div style="color:${isVertical ? '#ffffff' : '#3897f0'}; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">
-                        Ver esta publicación en Instagram
-                    </div>
-                </div>
-            </div>
-        </blockquote>
-    `;
-}
-
-/**
- * Carga el script de Instagram para los embeds
- */
-function loadInstagramScript() {
-    return new Promise((resolve, reject) => {
-        // Verificar si el script ya está cargado
-        if (window.instgrm && instagramScriptLoaded) {
-            resolve();
-            return;
-        }
-        
-        // Eliminar script anterior si existe
-        const existingScript = document.querySelector('script[src*="instagram.com/embed.js"]');
-        if (existingScript) {
-            existingScript.remove();
-        }
-        
-        const script = document.createElement('script');
-        script.async = true;
-        script.defer = true;
-        script.src = 'https://www.instagram.com/embed.js';
-        script.onload = () => {
-            instagramScriptLoaded = true;
-            console.log('Script de Instagram cargado exitosamente');
-            // Pequeño delay para asegurar que el script esté completamente listo
-            setTimeout(() => resolve(), 500);
-        };
-        script.onerror = (error) => {
-            console.error('Error al cargar el script de Instagram:', error);
-            reject(error);
-        };
-        
-        document.head.appendChild(script);
-    });
-}
-
-/**
- * FUNCIÓN CLAVE: Inicializa y carga el video de Instagram
- */
-async function initializeVideo() {
-    if (isVideoLoaded || !videoContainer) {
-        console.log('Video ya cargado o contenedor no disponible');
+    // Evitar inicialización múltiple
+    if (isInitialized) {
+        console.log('Modal ya inicializado');
         return;
     }
     
-    try {
-        console.log('Inicializando video con configuración:', INSTAGRAM_VIDEO_CONFIG);
-        
-        // Mostrar loading
-        videoContainer.innerHTML = '<div class="video-loading">Cargando video...</div>';
-        
-        // Obtener ID del post
-        let postId = INSTAGRAM_VIDEO_CONFIG.postId;
-        if (!postId && INSTAGRAM_VIDEO_CONFIG.url) {
-            postId = extractInstagramPostId(INSTAGRAM_VIDEO_CONFIG.url);
-        }
-        
-        if (!postId) {
-            throw new Error('No se pudo obtener el ID del post de Instagram');
-        }
-        
-        console.log('ID del post extraído:', postId);
-        
-        // Verificar si es contenido vertical
-        const isVertical = isVerticalContent(INSTAGRAM_VIDEO_CONFIG.url);
-        console.log('Contenido vertical:', isVertical);
-        
-        // Ajustar modal para el tipo de contenido
-        adjustModalForContent(isVertical);
-        
-        // Generar HTML del embed
-        const embedHTML = generateInstagramEmbed(postId, isVertical);
-        videoContainer.innerHTML = embedHTML;
-        
-        // Cargar script de Instagram
-        await loadInstagramScript();
-        
-        // Procesar embeds de Instagram
-        if (window.instgrm && window.instgrm.Embeds) {
-            console.log('Procesando embeds de Instagram...');
-            window.instgrm.Embeds.process();
-        }
-        
-        isVideoLoaded = true;
-        
-        // Configurar cierre automático
-        setupAutoClose();
-        
-        // Monitorear el estado del video
-        setupVideoEndDetection();
-        
-        console.log('Video inicializado correctamente');
-        
-    } catch (error) {
-        console.error('Error al inicializar el video:', error);
-        videoContainer.innerHTML = `
-            <div class="video-loading" style="color: #ff4444;">
-                Error al cargar el video<br>
-                <small>Verifica la URL de Instagram</small>
-            </div>
-        `;
+    // Verificar si ya se mostró en esta sesión
+    if (LOCAL_VIDEO_CONFIG.showOnlyOnce && sessionStorage.getItem('videoModalShown') === 'true') {
+        console.log('Modal ya fue mostrado en esta sesión');
+        return;
     }
+    
+    // Crear elementos del modal
+    if (!createModalElements()) {
+        console.error('Error al crear elementos del modal');
+        return;
+    }
+    
+    // Configurar event listeners
+    setupEventListeners();
+    
+    // Configurar eventos del video
+    setupVideoEvents();
+    
+    // Marcar como inicializado
+    isInitialized = true;
+    
+    // Mostrar automáticamente si está configurado
+    if (LOCAL_VIDEO_CONFIG.autoShow) {
+        setTimeout(() => {
+            showVideoModal();
+        }, LOCAL_VIDEO_CONFIG.autoShowDelay);
+    }
+    
+    console.log('Modal de video inicializado correctamente');
 }
 
 /**
- * Configura el cierre automático del modal
+ * Crea todos los elementos del modal
  */
-function setupAutoClose() {
-    // Limpiar timer anterior si existe
-    if (autoCloseTimer) {
-        clearTimeout(autoCloseTimer);
-    }
+function createModalElements() {
+    console.log('Creando elementos del modal...');
     
-    // Cerrar automáticamente después de 45 segundos (duración típica de un reel)
-    autoCloseTimer = setTimeout(() => {
-        console.log('Cerrando modal automáticamente...');
-        hideVideoModal();
-    }, 75000); // 45 segundos
-}
-
-/**
- * Monitorea el estado del video y cierra el modal automáticamente
- */
-function setupVideoEndDetection() {
-    let checkInterval;
-    let attempts = 0;
-    const maxAttempts = 60; // 1 minuto de intentos
+    // Obtener referencias a elementos existentes
+    videoModal = document.getElementById('videoModal');
+    videoContainer = document.getElementById('videoContainer');
+    closeButton = document.getElementById('closeVideoModal');
     
-    // Función para verificar si el video ha terminado
-    function checkVideoStatus() {
-        try {
-            // Buscar iframe de Instagram
-            const iframe = videoContainer.querySelector('iframe');
-            if (iframe) {
-                console.log('Iframe de Instagram detectado');
-                
-                // Configurar event listener para cuando el iframe termine de cargar
-                iframe.onload = () => {
-                    console.log('Iframe cargado completamente');
-                    
-                    // Intentar detectar interacciones con el video
-                    setTimeout(() => {
-                        // Si el video está en autoplay, se cerrará automáticamente
-                        console.log('Video en reproducción automática');
-                    }, 2000);
-                };
-                
-                clearInterval(checkInterval);
-                return true;
-            }
-            
-            // Buscar elementos de Instagram que indiquen que el embed está listo
-            const instagramMedia = videoContainer.querySelector('.instagram-media');
-            if (instagramMedia && instagramMedia.querySelector('iframe')) {
-                console.log('Embed de Instagram completamente cargado');
-                clearInterval(checkInterval);
-                return true;
-            }
-            
-        } catch (error) {
-            console.log('Error al verificar estado del video:', error);
-        }
-        
+    if (!videoModal || !videoContainer || !closeButton) {
+        console.error('No se encontraron los elementos del modal en el HTML');
         return false;
     }
     
-    // Verificar cada segundo
-    checkInterval = setInterval(() => {
-        attempts++;
-        
-        if (checkVideoStatus() || attempts >= maxAttempts) {
-            clearInterval(checkInterval);
-            if (attempts >= maxAttempts) {
-                console.log('Timeout: No se pudo detectar el video completamente');
-            }
-        }
-    }, 1000);
+    // Obtener overlay
+    overlay = videoModal.querySelector('.video-modal-overlay');
+    if (!overlay) {
+        console.error('No se encontró el overlay del modal');
+        return false;
+    }
+    
+    // Crear elemento de video
+    videoElement = createVideoElement();
+    
+    // Crear elementos de progreso
+    const progressElements = createProgressBar();
+    progressContainer = progressElements.container;
+    progressBar = progressElements.progressBar;
+    progressFill = progressElements.progressFill;
+    progressBuffer = progressElements.progressBuffer;
+    timeDisplay = progressElements.timeDisplay;
+    currentTimeSpan = progressElements.currentTime;
+    durationSpan = progressElements.duration;
+    
+    // Crear indicador de autoplay
+    autoPlayIndicator = createAutoPlayIndicator();
+    
+    // Crear elemento de carga
+    loadingElement = createLoadingElement();
+    
+    // Limpiar contenedor y agregar elementos
+    videoContainer.innerHTML = '';
+    videoContainer.appendChild(videoElement);
+    videoContainer.appendChild(progressContainer);
+    videoContainer.appendChild(autoPlayIndicator);
+    videoContainer.appendChild(loadingElement);
+    
+    // Ocultar modal inicialmente
+    videoModal.style.display = 'none';
+    videoModal.classList.add('hidden');
+    
+    console.log('Elementos del modal creados correctamente');
+    return true;
 }
 
 /**
- * Ajusta el tamaño del modal según el contenido
+ * Crea el elemento de video con todas las configuraciones
  */
-function adjustModalForContent(isVertical = false) {
-    if (!videoModal || !videoContainer) return;
+function createVideoElement() {
+    const video = document.createElement('video');
     
-    const modalContent = videoModal.querySelector('.video-modal-content');
-    if (!modalContent) return;
+    // Aplicar configuración
+    Object.entries(LOCAL_VIDEO_CONFIG.options).forEach(([key, value]) => {
+        video[key] = value;
+    });
     
-    if (isVertical) {
-        // Ajustes para contenido vertical (Reels)
-        modalContent.style.maxWidth = '420px';
-        modalContent.style.height = 'auto';
-        modalContent.style.maxHeight = '95vh';
-        
-        // Ajustar contenedor del video para aspecto vertical
-        videoContainer.style.paddingBottom = '177.78%'; // Aspect ratio 9:16
-        videoContainer.style.height = 'auto';
-        videoContainer.style.maxHeight = '75vh';
-        
-        // Añadir clase para estilos específicos
-        videoModal.classList.add('vertical-content');
-        
-        console.log('Modal ajustado para contenido vertical');
-    } else {
-        // Ajustes para contenido horizontal (Posts regulares)
-        modalContent.style.maxWidth = '800px';
-        modalContent.style.height = 'auto';
-        modalContent.style.maxHeight = '90vh';
-        
-        // Restaurar aspect ratio horizontal
-        videoContainer.style.paddingBottom = '56.25%'; // Aspect ratio 16:9
-        videoContainer.style.height = 'auto';
-        videoContainer.style.maxHeight = 'none';
-        
-        // Remover clase vertical si existe
-        videoModal.classList.remove('vertical-content');
-        
-        console.log('Modal ajustado para contenido horizontal');
-    }
+    // Atributos adicionales para mejor rendimiento
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('x5-playsinline', '');
+    video.preload = 'metadata';
+    
+    // Configurar source
+    video.src = LOCAL_VIDEO_CONFIG.videoSrc;
+    
+    console.log('Elemento de video creado con src:', LOCAL_VIDEO_CONFIG.videoSrc);
+    return video;
 }
+
+/**
+ * Crea la barra de progreso personalizada
+ */
+function createProgressBar() {
+    const container = document.createElement('div');
+    container.className = 'video-progress-container';
+    
+    const progressBar = document.createElement('div');
+    progressBar.className = 'video-progress-bar';
+    
+    const progressBuffer = document.createElement('div');
+    progressBuffer.className = 'video-progress-buffer';
+    
+    const progressFill = document.createElement('div');
+    progressFill.className = 'video-progress-fill';
+    
+    const timeDisplay = document.createElement('div');
+    timeDisplay.className = 'video-time-display';
+    
+    const currentTime = document.createElement('span');
+    currentTime.className = 'video-time-current';
+    currentTime.textContent = '0:00';
+    
+    const duration = document.createElement('span');
+    duration.className = 'video-time-duration';
+    duration.textContent = '0:00';
+    
+    // Ensamblar elementos
+    progressBar.appendChild(progressBuffer);
+    progressBar.appendChild(progressFill);
+    timeDisplay.appendChild(currentTime);
+    timeDisplay.appendChild(duration);
+    container.appendChild(progressBar);
+    container.appendChild(timeDisplay);
+    
+    return {
+        container,
+        progressBar,
+        progressFill,
+        progressBuffer,
+        timeDisplay,
+        currentTime,
+        duration
+    };
+}
+
+/**
+ * Crea el indicador de reproducción automática
+ */
+function createAutoPlayIndicator() {
+    const indicator = document.createElement('div');
+    indicator.className = 'auto-play-indicator';
+    indicator.textContent = '▶ Reproducción automática';
+    return indicator;
+}
+
+/**
+ * Crea el elemento de carga
+ */
+function createLoadingElement() {
+    const loading = document.createElement('div');
+    loading.className = 'video-loading';
+    
+    loading.innerHTML = `
+        <div>Cargando video...</div>
+        <div class="video-loading-spinner"></div>
+        <div class="video-loading-bar">
+            <div class="video-loading-progress"></div>
+        </div>
+    `;
+    
+    return loading;
+}
+
+// ===== FUNCIONES PRINCIPALES =====
 
 /**
  * Muestra el modal de video
  */
 function showVideoModal() {
-    if (!videoModal) {
-        console.error('Modal no encontrado');
+    if (!videoModal || isModalVisible) {
+        console.log('Modal no disponible o ya visible');
         return;
     }
-    
-    if (hasBeenShown) {
-        videoModal.style.display = 'flex';
-        videoModal.classList.remove('hidden');
-        return;
-    }
-    
+
+    console.log('Mostrando modal de video...');
+    isModalVisible = true;
     hasBeenShown = true;
+    
+    // Marcar como mostrado en la sesión
+    if (LOCAL_VIDEO_CONFIG.showOnlyOnce) {
+        sessionStorage.setItem('videoModalShown', 'true');
+    }
+
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+    
+    // Mostrar modal
     videoModal.style.display = 'flex';
-    videoModal.classList.remove('hidden');
     
-    // NO prevenir scroll del body para evitar sensación de página vacía
-    // document.body.style.overflow = 'hidden';
+    // Forzar reflow y mostrar con animación
+    requestAnimationFrame(() => {
+        videoModal.classList.remove('hidden');
+    });
     
-    // Añadir clase para animaciones
-    videoModal.classList.add('showing');
+    // Intentar reproducir el video si está configurado para autoplay
+    if (videoElement && LOCAL_VIDEO_CONFIG.options.autoplay) {
+        setTimeout(() => {
+            videoElement.play().catch(e => {
+                console.warn('Autoplay fallido:', e);
+                // Si autoplay falla, mostrar controles
+                videoElement.controls = true;
+            });
+        }, 100);
+    }
     
-    // Inicializar video después de mostrar el modal
+    // Focus en el modal para accesibilidad
     setTimeout(() => {
-        initializeVideo();
-    }, 300);
-    
+        if (videoModal) {
+            videoModal.focus();
+        }
+    }, 100);
+
     console.log('Modal de video mostrado');
 }
 
@@ -370,230 +302,698 @@ function showVideoModal() {
  * Oculta el modal de video
  */
 function hideVideoModal() {
-    if (!videoModal) return;
+    console.log('Ocultando modal de video...');
     
-    // Limpiar timer de cierre automático
-    if (autoCloseTimer) {
-        clearTimeout(autoCloseTimer);
-        autoCloseTimer = null;
+    if (!videoModal || !isModalVisible) {
+        console.log('Modal no existe o no está visible');
+        return;
+    }
+
+    isModalVisible = false;
+    
+    // Pausar y resetear video
+    if (videoElement) {
+        if (!videoElement.paused) {
+            videoElement.pause();
+            console.log('Video pausado');
+        }
+        // Resetear video al inicio para la próxima vez
+        videoElement.currentTime = 0;
     }
     
-    videoModal.classList.add('hidden');
-    videoModal.classList.remove('showing');
+    // Limpiar timers
+    clearAutoCloseTimer();
+    stopProgressUpdates();
     
     // Restaurar scroll del body
     document.body.style.overflow = '';
     
-    // Limpiar el video después de la animación
-    setTimeout(() => {
-        videoModal.style.display = 'none';
-        if (videoContainer) {
-            videoContainer.innerHTML = '';
-        }
-        isVideoLoaded = false;
-    }, 400);
+    // Ocultar modal con animación
+    videoModal.classList.add('hidden');
     
-    console.log('Modal de video ocultado');
-}
-
-/**
- * Maneja el clic en el overlay para cerrar el modal
- */
-function handleOverlayClick(event) {
-    if (event.target === videoModal || event.target.classList.contains('video-modal-overlay')) {
-        hideVideoModal();
-    }
-}
-
-/**
- * Maneja las teclas de escape para cerrar el modal
- */
-function handleKeyPress(event) {
-    if (event.key === 'Escape' && videoModal && !videoModal.classList.contains('hidden')) {
-        hideVideoModal();
-    }
-}
-
-/**
- * Maneja cambios en la visibilidad de la página
- */
-function handleVisibilityChange() {
-    if (document.hidden && videoModal && !videoModal.classList.contains('hidden')) {
-        // Pausar video si la página no es visible
-        console.log('Página oculta, el video se pausará automáticamente');
-    } else if (!document.hidden && videoModal && !videoModal.classList.contains('hidden')) {
-        // Reanudar video si la página es visible
-        console.log('Página visible, el video se reanudará automáticamente');
-    }
-}
-
-/**
- * Inicializa el modal de video
- */
-function initVideoModal() {
-    try {
-        // Obtener elementos del DOM
-        videoModal = document.getElementById('videoModal');
-        videoContainer = document.getElementById('videoContainer');
-        closeButton = document.getElementById('closeVideoModal');
-        
-        if (!videoModal || !videoContainer || !closeButton) {
-            console.error('No se encontraron los elementos del modal de video');
-            console.log('Elementos encontrados:', {
-                videoModal: !!videoModal,
-                videoContainer: !!videoContainer,
-                closeButton: !!closeButton
-            });
-            return;
+    // Ocultar completamente después de la animación
+    setTimeout(() => {
+        if (videoModal) {
+            videoModal.style.display = 'none';
         }
-        
-        // Configurar event listeners
-        closeButton.addEventListener('click', hideVideoModal);
-        videoModal.addEventListener('click', handleOverlayClick);
-        document.addEventListener('keydown', handleKeyPress);
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-        
-        // Event listener para prevenir cierre accidental
-        videoContainer.addEventListener('click', (event) => {
-            event.stopPropagation();
+    }, 300);
+    
+    console.log('Modal de video oculto');
+}
+
+/**
+ * Configura todos los event listeners
+ */
+function setupEventListeners() {
+    console.log('Configurando event listeners...');
+    
+    // Botón de cerrar - CORREGIDO
+    if (closeButton) {
+        // Remover listeners existentes para evitar duplicados
+        closeButton.removeEventListener('click', handleCloseClick);
+        closeButton.addEventListener('click', handleCloseClick);
+        console.log('Event listener del botón de cerrar configurado');
+    }
+    
+    // Clic en overlay para cerrar
+    if (LOCAL_VIDEO_CONFIG.clickOutsideToClose && overlay) {
+        overlay.removeEventListener('click', handleOverlayClick);
+        overlay.addEventListener('click', handleOverlayClick);
+        console.log('Event listener del overlay configurado');
+    }
+    
+    // Prevenir cierre al hacer clic en el contenido del modal
+    const modalContent = videoModal.querySelector('.video-modal-content');
+    if (modalContent) {
+        modalContent.removeEventListener('click', handleContentClick);
+        modalContent.addEventListener('click', handleContentClick);
+    }
+    
+    // Controles de teclado
+    if (LOCAL_VIDEO_CONFIG.enableKeyboardControls) {
+        setupKeyboardControls();
+    }
+    
+    // Event listeners para la barra de progreso
+    if (progressBar) {
+        setupProgressBarEvents();
+    }
+    
+    // Prevenir menú contextual en el video
+    if (videoElement) {
+        videoElement.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
         });
         
-        // Mostrar el modal automáticamente después de un breve delay
+        // Clic en el video para pausar/reproducir
+        videoElement.addEventListener('click', togglePlayPause);
+    }
+}
+
+// Handlers separados para mejor control
+function handleCloseClick(e) {
+    console.log('Botón de cerrar clickeado');
+    e.preventDefault();
+    e.stopPropagation();
+    hideVideoModal();
+}
+
+function handleOverlayClick(e) {
+    console.log('Overlay clickeado, target:', e.target, 'overlay:', overlay);
+    if (e.target === overlay) {
+        e.preventDefault();
+        e.stopPropagation();
+        hideVideoModal();
+    }
+}
+
+function handleContentClick(e) {
+    e.stopPropagation();
+}
+
+/**
+ * Configura los controles de teclado
+ */
+function setupKeyboardControls() {
+    // Remover listener existente
+    document.removeEventListener('keydown', handleKeydown);
+    document.addEventListener('keydown', handleKeydown);
+    console.log('Controles de teclado configurados');
+}
+
+function handleKeydown(e) {
+    if (!isModalVisible) return;
+    
+    console.log('Tecla presionada:', e.key);
+    
+    switch (e.key) {
+        case 'Escape':
+            console.log('ESC presionado - cerrando modal');
+            e.preventDefault();
+            hideVideoModal();
+            break;
+        case ' ':
+        case 'k':
+            e.preventDefault();
+            togglePlayPause();
+            break;
+        case 'ArrowLeft':
+            e.preventDefault();
+            seekVideo(-10);
+            break;
+        case 'ArrowRight':
+            e.preventDefault();
+            seekVideo(10);
+            break;
+        case 'ArrowUp':
+            e.preventDefault();
+            changeVolume(0.1);
+            break;
+        case 'ArrowDown':
+            e.preventDefault();
+            changeVolume(-0.1);
+            break;
+        case 'm':
+            toggleMute();
+            break;
+        case 'f':
+            toggleFullscreen();
+            break;
+    }
+}
+
+/**
+ * Configura los eventos de la barra de progreso
+ */
+function setupProgressBarEvents() {
+    // Click para seek
+    progressBar.addEventListener('click', handleProgressClick);
+    
+    // Drag para seek
+    progressBar.addEventListener('mousedown', handleProgressMouseDown);
+    document.addEventListener('mousemove', handleProgressMouseMove);
+    document.addEventListener('mouseup', handleProgressMouseUp);
+    
+    // Touch events para móviles
+    progressBar.addEventListener('touchstart', handleProgressTouchStart);
+    document.addEventListener('touchmove', handleProgressTouchMove);
+    document.addEventListener('touchend', handleProgressTouchEnd);
+}
+
+/**
+ * Configura todos los event listeners del video
+ */
+function setupVideoEvents() {
+    if (!videoElement) return;
+    
+    console.log('Configurando eventos de video...');
+    
+    // Evento de carga de metadatos
+    videoElement.addEventListener('loadedmetadata', () => {
+        console.log('Metadatos del video cargados, duración:', videoElement.duration);
+        if (durationSpan && !isNaN(videoElement.duration)) {
+            durationSpan.textContent = formatTime(videoElement.duration);
+        }
+        isVideoLoaded = true;
+    });
+    
+    // Evento de datos cargados
+    videoElement.addEventListener('loadeddata', () => {
+        console.log('Datos del video cargados');
+        hideLoadingElement();
+    });
+    
+    // Evento de progreso de carga
+    videoElement.addEventListener('progress', () => {
+        if (videoElement.buffered.length > 0) {
+            const buffered = videoElement.buffered.end(videoElement.buffered.length - 1);
+            const duration = videoElement.duration;
+            if (duration > 0) {
+                const percentage = (buffered / duration) * 100;
+                updateLoadingProgress(percentage);
+            }
+        }
+    });
+    
+    // Evento de inicio de reproducción
+    videoElement.addEventListener('play', () => {
+        console.log('Video iniciado');
+        startProgressUpdates();
+        hideAutoPlayIndicator();
+    });
+    
+    // Evento de pausa
+    videoElement.addEventListener('pause', () => {
+        console.log('Video pausado');
+        stopProgressUpdates();
+    });
+    
+    // Evento de actualización de tiempo
+    videoElement.addEventListener('timeupdate', updateProgress);
+    
+    // Evento de finalización
+    videoElement.addEventListener('ended', () => {
+        console.log('Video terminado');
+        stopProgressUpdates();
+        
+        if (LOCAL_VIDEO_CONFIG.autoClose) {
+            console.log('Configurando cierre automático...');
+            setAutoCloseTimer();
+        }
+    });
+    
+    // Evento de error - MEJORADO
+    videoElement.addEventListener('error', (e) => {
+        console.error('Error al cargar el video:', e);
+        console.error('Video error details:', {
+            error: videoElement.error,
+            networkState: videoElement.networkState,
+            readyState: videoElement.readyState,
+            src: videoElement.src
+        });
+        showVideoError('Error al cargar el video. Verifica la ruta del archivo.');
+    });
+    
+    // Evento de stall (cuando se detiene la carga)
+    videoElement.addEventListener('stalled', () => {
+        console.log('Carga del video detenida');
+        showLoadingElement();
+    });
+    
+    // Evento de waiting (esperando datos)
+    videoElement.addEventListener('waiting', () => {
+        console.log('Esperando datos del video');
+        showLoadingElement();
+    });
+    
+    // Evento de canplay (puede empezar a reproducir)
+    videoElement.addEventListener('canplay', () => {
+        console.log('Video listo para reproducir');
+        hideLoadingElement();
+    });
+    
+    // Evento de seeking
+    videoElement.addEventListener('seeking', () => {
+        showLoadingElement();
+    });
+    
+    // Evento de seeked
+    videoElement.addEventListener('seeked', () => {
+        hideLoadingElement();
+    });
+    
+    console.log('Eventos de video configurados');
+}
+
+// ===== FUNCIONES DE CONTROL DEL VIDEO =====
+
+/**
+ * Alterna entre reproducir y pausar
+ */
+function togglePlayPause() {
+    if (!videoElement) return;
+    
+    if (videoElement.paused) {
+        videoElement.play().catch(e => {
+            console.error('Error al reproducir:', e);
+        });
+    } else {
+        videoElement.pause();
+    }
+}
+
+/**
+ * Busca a una posición específica del video
+ */
+function seekVideo(seconds) {
+    if (!videoElement || isNaN(videoElement.duration)) return;
+    
+    const newTime = Math.max(0, Math.min(videoElement.duration, videoElement.currentTime + seconds));
+    videoElement.currentTime = newTime;
+}
+
+/**
+ * Cambia el volumen del video
+ */
+function changeVolume(delta) {
+    if (!videoElement) return;
+    
+    const newVolume = Math.max(0, Math.min(1, videoElement.volume + delta));
+    videoElement.volume = newVolume;
+    
+    // Mostrar indicador de volumen temporal
+    showVolumeIndicator(Math.round(newVolume * 100));
+}
+
+/**
+ * Alterna el mute del video
+ */
+function toggleMute() {
+    if (!videoElement) return;
+    
+    videoElement.muted = !videoElement.muted;
+    showVolumeIndicator(videoElement.muted ? 0 : Math.round(videoElement.volume * 100));
+}
+
+/**
+ * Alterna pantalla completa
+ */
+function toggleFullscreen() {
+    if (!videoContainer) return;
+    
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    } else {
+        videoContainer.requestFullscreen().catch(e => {
+            console.error('Error al entrar en pantalla completa:', e);
+        });
+    }
+}
+
+// ===== FUNCIONES DE LA BARRA DE PROGRESO =====
+
+/**
+ * Maneja el clic en la barra de progreso para hacer seek
+ */
+function handleProgressClick(event) {
+    if (!videoElement || isDragging || isNaN(videoElement.duration)) return;
+    
+    const rect = event.currentTarget.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+    const newTime = percentage * videoElement.duration;
+    
+    videoElement.currentTime = newTime;
+}
+
+/**
+ * Eventos de mouse para drag en la barra de progreso
+ */
+function handleProgressMouseDown(event) {
+    isDragging = true;
+    handleProgressClick(event);
+}
+
+function handleProgressMouseMove(event) {
+    if (!isDragging) return;
+    handleProgressClick(event);
+}
+
+function handleProgressMouseUp() {
+    isDragging = false;
+}
+
+/**
+ * Eventos de touch para móviles
+ */
+function handleProgressTouchStart(event) {
+    isDragging = true;
+    const touch = event.touches[0];
+    const rect = event.currentTarget.getBoundingClientRect();
+    const touchX = touch.clientX - rect.left;
+    const percentage = Math.max(0, Math.min(1, touchX / rect.width));
+    
+    if (videoElement && !isNaN(videoElement.duration)) {
+        const newTime = percentage * videoElement.duration;
+        videoElement.currentTime = newTime;
+    }
+}
+
+function handleProgressTouchMove(event) {
+    if (!isDragging || !videoElement || isNaN(videoElement.duration)) return;
+    event.preventDefault();
+    
+    const touch = event.touches[0];
+    const rect = progressBar.getBoundingClientRect();
+    const touchX = touch.clientX - rect.left;
+    const percentage = Math.max(0, Math.min(1, touchX / rect.width));
+    const newTime = percentage * videoElement.duration;
+    
+    videoElement.currentTime = newTime;
+}
+
+function handleProgressTouchEnd() {
+    isDragging = false;
+}
+
+/**
+ * Actualiza la barra de progreso
+ */
+function updateProgress() {
+    if (!videoElement || !progressFill || !currentTimeSpan || !durationSpan) return;
+    
+    const current = videoElement.currentTime;
+    const duration = videoElement.duration;
+    
+    if (isNaN(duration) || isNaN(current)) return;
+    
+    // Actualizar barra de progreso
+    const percentage = (current / duration) * 100;
+    progressFill.style.width = `${percentage}%`;
+    
+    // Actualizar buffer
+    if (videoElement.buffered.length > 0) {
+        const buffered = videoElement.buffered.end(videoElement.buffered.length - 1);
+        const bufferPercentage = (buffered / duration) * 100;
+        progressBuffer.style.width = `${bufferPercentage}%`;
+    }
+    
+    // Actualizar tiempo
+    currentTimeSpan.textContent = formatTime(current);
+    durationSpan.textContent = formatTime(duration);
+}
+
+// ===== FUNCIONES DE UI =====
+
+/**
+ * Muestra el elemento de carga
+ */
+function showLoadingElement() {
+    if (loadingElement) {
+        loadingElement.style.display = 'flex';
+    }
+}
+
+/**
+ * Oculta el elemento de carga
+ */
+function hideLoadingElement() {
+    if (loadingElement) {
+        loadingElement.style.display = 'none';
+    }
+}
+
+/**
+ * Oculta el indicador de autoplay
+ */
+function hideAutoPlayIndicator() {
+    if (autoPlayIndicator && autoPlayIndicator.parentNode) {
         setTimeout(() => {
-            showVideoModal();
-        }, 1500); // 1.5 segundos después de cargar la página
-        
-        console.log('Modal de video inicializado correctamente');
-        
-    } catch (error) {
-        console.error('Error al inicializar el modal:', error);
+            autoPlayIndicator.style.opacity = '0';
+            setTimeout(() => {
+                if (autoPlayIndicator && autoPlayIndicator.parentNode) {
+                    autoPlayIndicator.remove();
+                }
+            }, 300);
+        }, 2000);
     }
 }
 
 /**
- * Función para mostrar el modal manualmente (útil para testing)
+ * Muestra un error de video
  */
-function showVideoManually() {
-    hasBeenShown = false;
-    showVideoModal();
+function showVideoError(message) {
+    if (loadingElement) {
+        loadingElement.innerHTML = `
+            <div style="color: #ff6b35;">⚠ ${message}</div>
+            <button onclick="hideVideoModal()" style="
+                margin-top: 1rem; 
+                padding: 0.5rem 1rem; 
+                background: var(--modal-primary); 
+                color: white; 
+                border: none; 
+                border-radius: 8px; 
+                cursor: pointer;
+            ">Cerrar</button>
+        `;
+        loadingElement.style.display = 'flex';
+    }
 }
 
 /**
- * Función para actualizar la configuración del video
+ * Muestra un indicador temporal de volumen
  */
-function updateVideoConfig(newConfig) {
-    Object.assign(INSTAGRAM_VIDEO_CONFIG, newConfig);
-    isVideoLoaded = false;
-    console.log('Configuración del video actualizada:', INSTAGRAM_VIDEO_CONFIG);
+function showVolumeIndicator(volume) {
+    // Remover indicador existente
+    const existing = document.querySelector('.volume-indicator');
+    if (existing) existing.remove();
     
-    // Si el modal está abierto, recargar el video
-    if (videoModal && !videoModal.classList.contains('hidden')) {
-        initializeVideo();
-    }
-}
-
-/**
- * Función para reiniciar el modal
- */
-function resetVideoModal() {
-    hasBeenShown = false;
-    isVideoLoaded = false;
-    instagramScriptLoaded = false;
-    
-    // Limpiar timer
-    if (autoCloseTimer) {
-        clearTimeout(autoCloseTimer);
-        autoCloseTimer = null;
-    }
+    // Crear nuevo indicador
+    const indicator = document.createElement('div');
+    indicator.className = 'volume-indicator';
+    indicator.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 14px;
+        z-index: 1000;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    `;
+    indicator.textContent = volume === 0 ? '🔇 Silenciado' : `🔊 ${volume}%`;
     
     if (videoContainer) {
-        videoContainer.innerHTML = '';
+        videoContainer.appendChild(indicator);
+        
+        // Remover después de 2 segundos
+        setTimeout(() => {
+            indicator.style.opacity = '0';
+            setTimeout(() => {
+                if (indicator.parentNode) {
+                    indicator.remove();
+                }
+            }, 300);
+        }, 2000);
     }
-    
-    if (videoModal) {
-        videoModal.style.display = 'none';
-        videoModal.classList.add('hidden');
-    }
-    
-    document.body.style.overflow = '';
-    console.log('Modal de video reiniciado');
 }
 
 /**
- * Función para verificar si la URL de Instagram es válida
+ * Actualiza la barra de carga
  */
-function validateInstagramUrl(url) {
-    const patterns = [
-        /^https?:\/\/(www\.)?instagram\.com\/p\/[A-Za-z0-9_-]+\/?$/,
-        /^https?:\/\/(www\.)?instagram\.com\/reel\/[A-Za-z0-9_-]+\/?$/,
-        /^https?:\/\/(www\.)?instagram\.com\/tv\/[A-Za-z0-9_-]+\/?$/
-    ];
-    
-    return patterns.some(pattern => pattern.test(url));
+function updateLoadingProgress(percentage) {
+    const loadingProgress = loadingElement?.querySelector('.video-loading-progress');
+    if (loadingProgress) {
+        loadingProgress.style.width = `${percentage}%`;
+    }
 }
 
 // ===== FUNCIONES DE UTILIDAD =====
 
 /**
- * Función para debug - mostrar información del modal
+ * Formatea el tiempo en formato MM:SS
  */
-function debugModal() {
-    console.log('=== DEBUG MODAL ===');
-    console.log('Config:', INSTAGRAM_VIDEO_CONFIG);
-    console.log('Elementos DOM:', {
-        videoModal: !!videoModal,
-        videoContainer: !!videoContainer,
-        closeButton: !!closeButton
-    });
-    console.log('Estados:', {
-        isVideoLoaded,
-        hasBeenShown,
-        instagramScriptLoaded
-    });
-    console.log('URL válida:', validateInstagramUrl(INSTAGRAM_VIDEO_CONFIG.url));
-    console.log('Post ID:', extractInstagramPostId(INSTAGRAM_VIDEO_CONFIG.url));
+function formatTime(seconds) {
+    if (isNaN(seconds) || seconds < 0) return '0:00';
+    
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-// Hacer funciones disponibles globalmente para testing
-window.showVideoManually = showVideoManually;
+/**
+ * Inicia las actualizaciones periódicas del progreso
+ */
+function startProgressUpdates() {
+    stopProgressUpdates(); // Limpiar cualquier intervalo existente
+    progressUpdateInterval = setInterval(updateProgress, 100); // Actualizar cada 100ms
+}
+
+/**
+ * Detiene las actualizaciones del progreso
+ */
+function stopProgressUpdates() {
+    if (progressUpdateInterval) {
+        clearInterval(progressUpdateInterval);
+        progressUpdateInterval = null;
+    }
+}
+
+/**
+ * Configura el timer de cierre automático
+ */
+function setAutoCloseTimer() {
+    console.log('Configurando timer de cierre automático...');
+    clearAutoCloseTimer();
+    
+    autoCloseTimer = setTimeout(() => {
+        console.log('Cerrando modal automáticamente...');
+        hideVideoModal();
+    }, LOCAL_VIDEO_CONFIG.autoCloseDelay);
+    
+    console.log(`Video terminado, cerrando en ${LOCAL_VIDEO_CONFIG.autoCloseDelay}ms`);
+}
+
+/**
+ * Limpia el timer de cierre automático
+ */
+function clearAutoCloseTimer() {
+    if (autoCloseTimer) {
+        clearTimeout(autoCloseTimer);
+        autoCloseTimer = null;
+        console.log('Timer de cierre automático limpiado');
+    }
+}
+
+// ===== FUNCIONES PÚBLICAS PARA USO EXTERNO =====
+
+/**
+ * Muestra el modal manualmente
+ */
+window.showVideoModal = showVideoModal;
+
+/**
+ * Oculta el modal manualmente
+ */
 window.hideVideoModal = hideVideoModal;
-window.updateVideoConfig = updateVideoConfig;
-window.resetVideoModal = resetVideoModal;
-window.debugModal = debugModal;
+
+/**
+ * Reinicia el modal (permite mostrarlo nuevamente)
+ */
+window.resetVideoModal = function() {
+    hasBeenShown = false;
+    sessionStorage.removeItem('videoModalShown');
+    console.log('Modal de video reiniciado');
+};
+
+/**
+ * Cambia la fuente del video
+ */
+window.changeVideoSource = function(newSrc) {
+    if (videoElement) {
+        videoElement.src = newSrc;
+        videoElement.load();
+        isVideoLoaded = false;
+        console.log('Fuente de video cambiada a:', newSrc);
+    }
+};
 
 // ===== INICIALIZACIÓN =====
 
-// Inicializar cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM cargado, inicializando modal...');
-    // Pequeño delay para asegurar que todos los elementos estén listos
-    setTimeout(initVideoModal, 500);
-});
-
-// Inicialización de respaldo por si DOMContentLoaded ya pasó
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initVideoModal);
-    
-} else {
-    // DOM ya está cargado
-    setTimeout(initVideoModal, 500);
+// Función de inicialización segura
+function safeInit() {
+    try {
+        // Reiniciar variables de estado para asegurar una inicialización limpia
+        isInitialized = false;
+        isModalVisible = false;
+        isVideoLoaded = false;
+        hasBeenShown = false; // Aseguramos que se reinicie esta variable
+        
+        // Limpiar timers existentes
+        clearAutoCloseTimer();
+        stopProgressUpdates();
+        
+        // Limpiar sessionStorage para permitir que el modal se muestre nuevamente
+        if (LOCAL_VIDEO_CONFIG.showOnlyOnce) {
+            sessionStorage.removeItem('videoModalShown');
+        }
+        
+        // Reiniciar elementos del DOM
+        const videoModal = document.getElementById('videoModal');
+        if (videoModal) {
+            videoModal.style.display = 'none';
+            videoModal.classList.add('hidden');
+            
+            // Limpiar el contenedor de video para evitar problemas con el video anterior
+            const videoContainer = document.getElementById('videoContainer');
+            if (videoContainer) {
+                videoContainer.innerHTML = '';
+            }
+        }
+        
+        // Inicializar el modal con estado limpio
+        initVideoModal();
+    } catch (error) {
+        console.error('Error al inicializar el modal de video:', error);
+    }
 }
 
-// Manejar recarga de página
-window.addEventListener('load', () => {
-    console.log('Página completamente cargada');
-    // Verificar que el modal esté inicializado
-    if (!videoModal) {
-        setTimeout(initVideoModal, 200);
-    }
+// Inicializar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', safeInit);
+} else {
+    // El DOM ya está listo
+    safeInit();
+}
+
+// Limpiar cuando se cierra la ventana
+window.addEventListener('beforeunload', () => {
+    clearAutoCloseTimer();
+    stopProgressUpdates();
 });
 
-// Manejar errores globales
-// Completar la función que se cortó
-window.addEventListener('error', (event) => {
-    if (event.filename && event.filename.includes('instagram.com')) {
-        console.warn('Error en script de Instagram:', event.error);
-    }
-});
-
-console.log('Script del modal de video de Instagram cargado completamente');
+console.log('Script del modal de video cargado correctamente');

@@ -1,28 +1,33 @@
-/* ===== MODAL DE VIDEO INSTAGRAM - DISEÑO OPTIMIZADO Y RESPONSIVO ===== */
+/* ===== MODAL DE VIDEO LOCAL - DISEÑO OPTIMIZADO Y RESPONSIVO ===== */
 
 /* Variables CSS optimizadas */
 :root {
     --modal-primary: #ff6b35;
     --modal-secondary: #ffa726;
     --modal-accent: #00d4aa;
-    --modal-bg: rgba(15, 25, 45, 0.95);
+    --modal-bg: rgba(15, 25, 45, 0.7); /* Reducido para menos desenfoque */
     --modal-overlay: linear-gradient(135deg, 
-        rgba(15, 25, 45, 0.95), 
-        rgba(30, 45, 75, 0.9),
-        rgba(45, 60, 100, 0.85));
+        rgba(15, 25, 45, 0.6), 
+        rgba(30, 45, 75, 0.5),
+        rgba(45, 60, 100, 0.4)); /* Más transparente */
     --modal-content-bg: linear-gradient(145deg,
-        rgba(25, 35, 55, 0.98),
-        rgba(35, 45, 70, 0.95));
+        rgba(25, 35, 55, 0.95),
+        rgba(35, 45, 70, 0.9));
     --modal-border: rgba(255, 255, 255, 0.1);
     --text-primary: #ffffff;
     --text-secondary: #b8c5d1;
-    --shadow-intense: 0 25px 80px rgba(0, 0, 0, 0.8);
-    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --shadow-intense: 0 25px 80px rgba(0, 0, 0, 0.6);
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.2);
     --border-radius: 20px;
     --border-radius-small: 12px;
     --transition-base: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     --z-modal: 10000;
+    
+    /* Colores para la barra de progreso */
+    --progress-bg: rgba(255, 255, 255, 0.2);
+    --progress-fill: linear-gradient(90deg, var(--modal-primary), var(--modal-secondary));
+    --progress-buffer: rgba(255, 255, 255, 0.1);
 }
 
 /* ===== CONTENEDOR PRINCIPAL DEL MODAL ===== */
@@ -54,7 +59,7 @@
     animation: modalFadeOut 0.3s ease-in forwards;
 }
 
-/* ===== OVERLAY DE FONDO ===== */
+/* ===== OVERLAY DE FONDO (SIN DESENFOQUE) ===== */
 .video-modal-overlay {
     position: absolute;
     top: 0;
@@ -63,8 +68,7 @@
     bottom: 0;
     background: var(--modal-overlay);
     cursor: pointer;
-    backdrop-filter: blur(3px) saturate(1.2);
-    -webkit-backdrop-filter: blur(3px) saturate(1.2);
+    /* Eliminado backdrop-filter para quitar desenfoque */
 }
 
 /* ===== CONTENIDO DEL MODAL ===== */
@@ -83,26 +87,14 @@
     transform: translateZ(0);
     background-clip: padding-box;
     
-    /* Para videos horizontales (por defecto) */
-    width: 90vw;
-    max-width: 900px;
-    height: auto;
-    max-height: 90vh;
-    padding: 1.5rem;
-}
-
-/* Ajustes específicos para contenido vertical */
-.video-modal.vertical-content .video-modal-content {
+    /* Para videos verticales (optimizado para móvil) */
     width: auto;
     height: 95vh;
     max-height: 95vh;
-    max-width: none;
-    padding: 0.75rem;
-    
-    /* Calcular ancho basado en la altura disponible */
     aspect-ratio: 9 / 16;
     width: calc(95vh * 9 / 16);
     max-width: 90vw;
+    padding: 0.75rem;
 }
 
 /* ===== BOTÓN DE CERRAR ===== */
@@ -112,10 +104,8 @@
     right: 1rem;
     width: 48px;
     height: 48px;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     color: var(--text-primary);
     cursor: pointer;
@@ -132,7 +122,7 @@
 }
 
 .video-modal-close:hover {
-    background: rgba(255, 107, 53, 0.8);
+    background: rgba(255, 107, 53, 0.9);
     border-color: var(--modal-primary);
     color: #fff;
     transform: scale(1.1);
@@ -159,7 +149,7 @@
 .video-container {
     position: relative;
     width: 100%;
-    flex: 1;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -168,38 +158,79 @@
     overflow: hidden;
     box-shadow: var(--shadow-soft);
     border: 1px solid var(--modal-border);
-    min-height: 0; /* Importante para flex */
 }
 
-/* Para videos horizontales - mantener aspect ratio */
-.video-modal:not(.vertical-content) .video-container {
-    aspect-ratio: 16 / 9;
-    height: auto;
-}
-
-/* Para videos verticales - ocupar todo el contenedor disponible */
-.video-modal.vertical-content .video-container {
-    height: 100%;
-    aspect-ratio: 9 / 16;
+/* ===== VIDEO ELEMENT ===== */
+.video-container video {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--border-radius-small);
+    background: #000;
 }
 
-/* ===== CONTENIDO INTERNO DEL VIDEO ===== */
-.video-container > *,
-.video-container iframe,
-.video-container .instagram-media {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    border: none !important;
-    border-radius: var(--border-radius-small) !important;
-    background: #000 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    object-fit: cover !important;
+/* ===== BARRA DE PROGRESO DEL VIDEO ===== */
+.video-progress-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.video-progress-bar {
+    position: relative;
+    width: 100%;
+    height: 6px;
+    background: var(--progress-bg);
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.video-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--progress-fill);
+    border-radius: 3px;
+    transition: width 0.1s ease;
+    width: 0%;
+}
+
+.video-progress-buffer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--progress-buffer);
+    border-radius: 3px;
+    width: 0%;
+    z-index: -1;
+}
+
+/* Indicador de tiempo */
+.video-time-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.video-time-current,
+.video-time-duration {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 2px 6px;
+    border-radius: 4px;
+    min-width: 35px;
+    text-align: center;
 }
 
 /* ===== ESTADO DE CARGA ===== */
@@ -216,27 +247,71 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
     z-index: 10;
 }
 
-.video-loading::after {
-    content: '';
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 167, 38, 0.2);
+.video-loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 167, 38, 0.2);
     border-radius: 50%;
     border-top-color: var(--modal-secondary);
     animation: spin 1s linear infinite;
 }
 
-.video-loading[style*="color: #ff4444"] {
-    color: #ff6b6b !important;
+/* Barra de carga personalizada */
+.video-loading-bar {
+    width: 200px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 10px;
 }
 
-.video-loading[style*="color: #ff4444"]::after {
-    border-top-color: #ff6b6b;
-    animation: pulse 1.5s ease-in-out infinite;
+.video-loading-progress {
+    height: 100%;
+    background: var(--progress-fill);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* ===== CONTROLES DE VIDEO (OCULTOS POR DEFECTO) ===== */
+.video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.video-container:hover .video-controls {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ===== INDICADOR DE REPRODUCCIÓN AUTOMÁTICA ===== */
+.auto-play-indicator {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    z-index: 100;
+    opacity: 1;
+    animation: fadeInOut 3s ease forwards;
 }
 
 /* ===== ANIMACIONES ===== */
@@ -264,7 +339,7 @@
 
 @keyframes modalSlideIn {
     from {
-        transform: scale(0.8) translateY(-30px);
+        transform: scale(0.9) translateY(-20px);
         opacity: 0;
     }
     to {
@@ -278,40 +353,31 @@
     100% { transform: rotate(360deg); }
 }
 
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.1);
-        opacity: 0.7;
-    }
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    20% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
 }
 
 /* ===== DISEÑO RESPONSIVO ===== */
 
 /* Pantallas muy grandes */
 @media (min-width: 1400px) {
-    .video-modal.vertical-content .video-modal-content {
-        width: calc(95vh * 9 / 16);
-        max-width: 600px;
+    .video-modal-content {
+        width: calc(90vh * 9 / 16);
+        max-width: 500px;
+        height: 90vh;
     }
 }
 
 /* Tablets grandes */
 @media (max-width: 1024px) {
     .video-modal-content {
-        width: 95vw;
-        max-width: 95vw;
-        padding: 1.25rem;
-    }
-    
-    .video-modal.vertical-content .video-modal-content {
-        width: calc(90vh * 9 / 16);
-        max-width: 85vw;
-        height: 90vh;
-        max-height: 90vh;
+        width: calc(85vh * 9 / 16);
+        max-width: 80vw;
+        height: 85vh;
+        padding: 1rem;
     }
 }
 
@@ -322,17 +388,9 @@
     }
     
     .video-modal-content {
-        width: 100vw;
-        max-width: 100vw;
-        padding: 1rem;
-        border-radius: var(--border-radius-small);
-        max-height: 95vh;
-    }
-    
-    .video-modal.vertical-content .video-modal-content {
-        width: calc(95vh * 9 / 16);
-        max-width: 95vw;
-        height: 95vh;
+        width: calc(90vh * 9 / 16);
+        max-width: 90vw;
+        height: 90vh;
         padding: 0.75rem;
     }
     
@@ -343,37 +401,32 @@
         right: 0.75rem;
     }
     
-    .video-modal-close::before {
-        font-size: 24px;
+    .video-progress-container {
+        bottom: 15px;
+        left: 15px;
+        right: 15px;
+    }
+    
+    .auto-play-indicator {
+        top: 15px;
+        left: 15px;
+        font-size: 11px;
+        padding: 6px 10px;
     }
 }
 
 /* Móviles */
 @media (max-width: 480px) {
     .video-modal {
-        padding: 0;
+        padding: 0.25rem;
     }
     
     .video-modal-content {
-        width: 100vw;
-        height: 100vh;
-        max-height: 100vh;
+        width: calc(95vh * 9 / 16);
+        max-width: 95vw;
+        height: 95vh;
         padding: 0.5rem;
-        border-radius: 0;
-        border: none;
-    }
-    
-    .video-modal.vertical-content .video-modal-content {
-        width: 100vw;
-        height: 100vh;
-        max-height: 100vh;
-        max-width: 100vw;
-        padding: 0.25rem;
-        border-radius: 0;
-    }
-    
-    .video-container {
-        border-radius: 8px;
+        border-radius: var(--border-radius-small);
     }
     
     .video-modal-close {
@@ -381,21 +434,49 @@
         height: 40px;
         top: 0.5rem;
         right: 0.5rem;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.9);
     }
     
     .video-modal-close::before {
         font-size: 22px;
     }
     
-    .video-loading {
-        font-size: 16px;
+    .video-progress-container {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
     }
     
-    .video-loading::after {
-        width: 32px;
-        height: 32px;
-        border-width: 2px;
+    .video-progress-bar {
+        height: 4px;
+    }
+    
+    .video-time-display {
+        font-size: 10px;
+        margin-top: 6px;
+    }
+    
+    .auto-play-indicator {
+        top: 10px;
+        left: 10px;
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+    
+    .video-loading {
+        font-size: 16px;
+        gap: 1rem;
+    }
+    
+    .video-loading-spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 3px;
+    }
+    
+    .video-loading-bar {
+        width: 150px;
+        height: 3px;
     }
 }
 
@@ -403,10 +484,9 @@
 @media (max-width: 360px) {
     .video-modal-content {
         padding: 0.25rem;
-    }
-    
-    .video-modal.vertical-content .video-modal-content {
-        padding: 0.1rem;
+        width: calc(98vh * 9 / 16);
+        max-width: 98vw;
+        height: 98vh;
     }
     
     .video-modal-close {
@@ -419,6 +499,17 @@
     .video-modal-close::before {
         font-size: 20px;
     }
+    
+    .video-progress-container {
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+    }
+    
+    .auto-play-indicator {
+        top: 8px;
+        left: 8px;
+    }
 }
 
 /* ===== ORIENTACIÓN LANDSCAPE EN MÓVILES ===== */
@@ -428,20 +519,14 @@
     }
     
     .video-modal-content {
-        width: 100vw;
-        height: 100vh;
-        max-height: 100vh;
-        padding: 0.25rem;
-        border-radius: 0;
-    }
-    
-    .video-modal.vertical-content .video-modal-content {
         width: auto;
         height: 100vh;
+        max-height: 100vh;
         aspect-ratio: 9 / 16;
         width: calc(100vh * 9 / 16);
-        max-width: 90vw;
+        max-width: 85vw;
         padding: 0.25rem;
+        border-radius: 8px;
     }
     
     .video-modal-close {
@@ -454,14 +539,31 @@
     .video-modal-close::before {
         font-size: 18px;
     }
+    
+    .video-progress-container {
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+    }
+    
+    .video-progress-bar {
+        height: 3px;
+    }
+    
+    .auto-play-indicator {
+        top: 8px;
+        left: 8px;
+        font-size: 9px;
+        padding: 3px 6px;
+    }
 }
 
-/* ===== PANTALLAS MUY ALTAS (para videos verticales) ===== */
+/* ===== PANTALLAS MUY ALTAS ===== */
 @media (min-aspect-ratio: 1/2) and (orientation: portrait) {
-    .video-modal.vertical-content .video-modal-content {
-        height: 90vh;
-        width: calc(90vh * 9 / 16);
-        max-width: 85vw;
+    .video-modal-content {
+        height: 85vh;
+        width: calc(85vh * 9 / 16);
+        max-width: 80vw;
     }
 }
 
@@ -469,7 +571,8 @@
 .video-modal,
 .video-modal-content,
 .video-container,
-.video-modal-close {
+.video-modal-close,
+.video-progress-container {
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
@@ -493,22 +596,24 @@
 /* ===== PREFERENCIAS DEL SISTEMA ===== */
 @media (prefers-color-scheme: dark) {
     :root {
-        --modal-bg: rgba(5, 10, 20, 0.98);
+        --modal-bg: rgba(5, 10, 20, 0.8);
         --modal-content-bg: linear-gradient(145deg,
-            rgba(10, 15, 25, 0.98),
-            rgba(15, 20, 30, 0.95));
+            rgba(10, 15, 25, 0.95),
+            rgba(15, 20, 30, 0.9));
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .video-modal,
     .video-modal-content,
-    .video-modal-close {
+    .video-modal-close,
+    .video-progress-fill,
+    .auto-play-indicator {
         animation: none;
         transition: opacity 0.2s ease, visibility 0.2s ease;
     }
     
-    .video-loading::after {
+    .video-loading-spinner {
         animation: none;
     }
 }
@@ -520,21 +625,11 @@
     
     .video-modal-close {
         border: 2px solid var(--text-primary);
-        background: rgba(0, 0, 0, 0.9);
-    }
-}
-
-@media (prefers-reduced-transparency) {
-    .video-modal-overlay {
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        background: rgba(15, 25, 45, 0.98);
+        background: rgba(0, 0, 0, 0.95);
     }
     
-    .video-modal-close {
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        background: rgba(0, 0, 0, 0.9);
+    .video-progress-bar {
+        background: rgba(255, 255, 255, 0.4);
     }
 }
 
@@ -543,25 +638,4 @@
     .video-modal {
         display: none !important;
     }
-}
-
-/* ===== HACK ESPECÍFICO PARA INSTAGRAM EMBEDS ===== */
-.video-container .instagram-media {
-    min-height: 100% !important;
-    min-width: 100% !important;
-}
-
-/* Forzar que el contenido de Instagram se ajuste correctamente */
-.video-modal.vertical-content .video-container .instagram-media {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* Eliminar márgenes y espaciados innecesarios de Instagram */
-.video-container .instagram-media > div {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
 }
