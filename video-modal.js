@@ -317,8 +317,11 @@ function hideVideoModal() {
             videoElement.pause();
             console.log('Video pausado');
         }
-        // Resetear video al inicio para la próxima vez
+        // Detener completamente el video para evitar que el audio continúe
         videoElement.currentTime = 0;
+        videoElement.src = ''; // Limpiar la fuente
+        videoElement.load(); // Recargar el elemento para detener completamente
+        console.log('Video detenido completamente');
     }
     
     // Limpiar timers
