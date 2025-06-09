@@ -1,0 +1,567 @@
+/* ===== MODAL DE VIDEO INSTAGRAM - DISEÑO OPTIMIZADO Y RESPONSIVO ===== */
+
+/* Variables CSS optimizadas */
+:root {
+    --modal-primary: #ff6b35;
+    --modal-secondary: #ffa726;
+    --modal-accent: #00d4aa;
+    --modal-bg: rgba(15, 25, 45, 0.95);
+    --modal-overlay: linear-gradient(135deg, 
+        rgba(15, 25, 45, 0.95), 
+        rgba(30, 45, 75, 0.9),
+        rgba(45, 60, 100, 0.85));
+    --modal-content-bg: linear-gradient(145deg,
+        rgba(25, 35, 55, 0.98),
+        rgba(35, 45, 70, 0.95));
+    --modal-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #b8c5d1;
+    --shadow-intense: 0 25px 80px rgba(0, 0, 0, 0.8);
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --border-radius: 20px;
+    --border-radius-small: 12px;
+    --transition-base: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --z-modal: 10000;
+}
+
+/* ===== CONTENEDOR PRINCIPAL DEL MODAL ===== */
+.video-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 1;
+    visibility: visible;
+    animation: modalFadeIn 0.5s ease-out;
+    will-change: opacity, visibility;
+    transform: translateZ(0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Estado oculto del modal */
+.video-modal.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    animation: modalFadeOut 0.3s ease-in forwards;
+}
+
+/* ===== OVERLAY DE FONDO ===== */
+.video-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--modal-overlay);
+    cursor: pointer;
+    backdrop-filter: blur(3px) saturate(1.2);
+    -webkit-backdrop-filter: blur(3px) saturate(1.2);
+}
+
+/* ===== CONTENIDO DEL MODAL ===== */
+.video-modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--modal-content-bg);
+    border: 1px solid var(--modal-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-intense);
+    animation: modalSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+    cursor: default;
+    will-change: transform;
+    transform: translateZ(0);
+    background-clip: padding-box;
+    
+    /* Para videos horizontales (por defecto) */
+    width: 90vw;
+    max-width: 900px;
+    height: auto;
+    max-height: 90vh;
+    padding: 1.5rem;
+}
+
+/* Ajustes específicos para contenido vertical */
+.video-modal.vertical-content .video-modal-content {
+    width: auto;
+    height: 95vh;
+    max-height: 95vh;
+    max-width: none;
+    padding: 0.75rem;
+    
+    /* Calcular ancho basado en la altura disponible */
+    aspect-ratio: 9 / 16;
+    width: calc(95vh * 9 / 16);
+    max-width: 90vw;
+}
+
+/* ===== BOTÓN DE CERRAR ===== */
+.video-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-base);
+    font-size: 24px;
+    font-weight: 300;
+    z-index: calc(var(--z-modal) + 1);
+    outline: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.video-modal-close:hover {
+    background: rgba(255, 107, 53, 0.8);
+    border-color: var(--modal-primary);
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+}
+
+.video-modal-close:active {
+    transform: scale(0.95);
+}
+
+.video-modal-close:focus-visible {
+    outline: 2px solid var(--modal-primary);
+    outline-offset: 2px;
+}
+
+.video-modal-close::before {
+    content: '×';
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 300;
+}
+
+/* ===== CONTENEDOR DEL VIDEO ===== */
+.video-container {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    border-radius: var(--border-radius-small);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--modal-border);
+    min-height: 0; /* Importante para flex */
+}
+
+/* Para videos horizontales - mantener aspect ratio */
+.video-modal:not(.vertical-content) .video-container {
+    aspect-ratio: 16 / 9;
+    height: auto;
+}
+
+/* Para videos verticales - ocupar todo el contenedor disponible */
+.video-modal.vertical-content .video-container {
+    height: 100%;
+    aspect-ratio: 9 / 16;
+    width: 100%;
+}
+
+/* ===== CONTENIDO INTERNO DEL VIDEO ===== */
+.video-container > *,
+.video-container iframe,
+.video-container .instagram-media {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    border-radius: var(--border-radius-small) !important;
+    background: #000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    object-fit: cover !important;
+}
+
+/* ===== ESTADO DE CARGA ===== */
+.video-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--modal-secondary);
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    z-index: 10;
+}
+
+.video-loading::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 167, 38, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--modal-secondary);
+    animation: spin 1s linear infinite;
+}
+
+.video-loading[style*="color: #ff4444"] {
+    color: #ff6b6b !important;
+}
+
+.video-loading[style*="color: #ff4444"]::after {
+    border-top-color: #ff6b6b;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== ANIMACIONES ===== */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        visibility: hidden;
+    }
+    to {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+        visibility: visible;
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: scale(0.8) translateY(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+}
+
+/* ===== DISEÑO RESPONSIVO ===== */
+
+/* Pantallas muy grandes */
+@media (min-width: 1400px) {
+    .video-modal.vertical-content .video-modal-content {
+        width: calc(95vh * 9 / 16);
+        max-width: 600px;
+    }
+}
+
+/* Tablets grandes */
+@media (max-width: 1024px) {
+    .video-modal-content {
+        width: 95vw;
+        max-width: 95vw;
+        padding: 1.25rem;
+    }
+    
+    .video-modal.vertical-content .video-modal-content {
+        width: calc(90vh * 9 / 16);
+        max-width: 85vw;
+        height: 90vh;
+        max-height: 90vh;
+    }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+    .video-modal {
+        padding: 0.5rem;
+    }
+    
+    .video-modal-content {
+        width: 100vw;
+        max-width: 100vw;
+        padding: 1rem;
+        border-radius: var(--border-radius-small);
+        max-height: 95vh;
+    }
+    
+    .video-modal.vertical-content .video-modal-content {
+        width: calc(95vh * 9 / 16);
+        max-width: 95vw;
+        height: 95vh;
+        padding: 0.75rem;
+    }
+    
+    .video-modal-close {
+        width: 44px;
+        height: 44px;
+        top: 0.75rem;
+        right: 0.75rem;
+    }
+    
+    .video-modal-close::before {
+        font-size: 24px;
+    }
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+    .video-modal {
+        padding: 0;
+    }
+    
+    .video-modal-content {
+        width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
+        padding: 0.5rem;
+        border-radius: 0;
+        border: none;
+    }
+    
+    .video-modal.vertical-content .video-modal-content {
+        width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
+        max-width: 100vw;
+        padding: 0.25rem;
+        border-radius: 0;
+    }
+    
+    .video-container {
+        border-radius: 8px;
+    }
+    
+    .video-modal-close {
+        width: 40px;
+        height: 40px;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: rgba(0, 0, 0, 0.8);
+    }
+    
+    .video-modal-close::before {
+        font-size: 22px;
+    }
+    
+    .video-loading {
+        font-size: 16px;
+    }
+    
+    .video-loading::after {
+        width: 32px;
+        height: 32px;
+        border-width: 2px;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 360px) {
+    .video-modal-content {
+        padding: 0.25rem;
+    }
+    
+    .video-modal.vertical-content .video-modal-content {
+        padding: 0.1rem;
+    }
+    
+    .video-modal-close {
+        width: 36px;
+        height: 36px;
+        top: 0.25rem;
+        right: 0.25rem;
+    }
+    
+    .video-modal-close::before {
+        font-size: 20px;
+    }
+}
+
+/* ===== ORIENTACIÓN LANDSCAPE EN MÓVILES ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+    .video-modal {
+        padding: 0;
+    }
+    
+    .video-modal-content {
+        width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
+        padding: 0.25rem;
+        border-radius: 0;
+    }
+    
+    .video-modal.vertical-content .video-modal-content {
+        width: auto;
+        height: 100vh;
+        aspect-ratio: 9 / 16;
+        width: calc(100vh * 9 / 16);
+        max-width: 90vw;
+        padding: 0.25rem;
+    }
+    
+    .video-modal-close {
+        width: 32px;
+        height: 32px;
+        top: 0.25rem;
+        right: 0.25rem;
+    }
+    
+    .video-modal-close::before {
+        font-size: 18px;
+    }
+}
+
+/* ===== PANTALLAS MUY ALTAS (para videos verticales) ===== */
+@media (min-aspect-ratio: 1/2) and (orientation: portrait) {
+    .video-modal.vertical-content .video-modal-content {
+        height: 90vh;
+        width: calc(90vh * 9 / 16);
+        max-width: 85vw;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE RENDIMIENTO ===== */
+.video-modal,
+.video-modal-content,
+.video-container,
+.video-modal-close {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.video-modal {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+}
+
+.video-modal-close,
+.video-modal-overlay {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* ===== PREFERENCIAS DEL SISTEMA ===== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --modal-bg: rgba(5, 10, 20, 0.98);
+        --modal-content-bg: linear-gradient(145deg,
+            rgba(10, 15, 25, 0.98),
+            rgba(15, 20, 30, 0.95));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .video-modal,
+    .video-modal-content,
+    .video-modal-close {
+        animation: none;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    
+    .video-loading::after {
+        animation: none;
+    }
+}
+
+@media (prefers-contrast: high) {
+    .video-modal-content {
+        border: 2px solid var(--text-primary);
+    }
+    
+    .video-modal-close {
+        border: 2px solid var(--text-primary);
+        background: rgba(0, 0, 0, 0.9);
+    }
+}
+
+@media (prefers-reduced-transparency) {
+    .video-modal-overlay {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(15, 25, 45, 0.98);
+    }
+    
+    .video-modal-close {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(0, 0, 0, 0.9);
+    }
+}
+
+/* ===== MODO IMPRESIÓN ===== */
+@media print {
+    .video-modal {
+        display: none !important;
+    }
+}
+
+/* ===== HACK ESPECÍFICO PARA INSTAGRAM EMBEDS ===== */
+.video-container .instagram-media {
+    min-height: 100% !important;
+    min-width: 100% !important;
+}
+
+/* Forzar que el contenido de Instagram se ajuste correctamente */
+.video-modal.vertical-content .video-container .instagram-media {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Eliminar márgenes y espaciados innecesarios de Instagram */
+.video-container .instagram-media > div {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}

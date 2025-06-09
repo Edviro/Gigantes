@@ -7,7 +7,7 @@ const carouselData = [
         id: 1,
         logo: 'logosEspecialidades/01.png', // Reemplaza con tu logo real
         title: 'ALIVIO DEL HAMBRE (AD 001)',
-        description: '" Descarga la ficha de desarollo para la especialidad "',
+        description: 'Ficha de desarrollo para la especialidad (a desarrollar por todos) ',
         downloadLink: '#', // Reemplaza con el enlace real de descarga,
         target: '_blank',
     },
@@ -15,15 +15,15 @@ const carouselData = [
         id: 2,
         logo: 'logosEspecialidades/02.png', // Reemplaza con tu logo real
         title: 'IMPRENTA (AP 010)',
-        description: '" Descarga la ficha de desarollo para la especialidad "',
-        downloadLink: 'https://drive.google.com/file/d/1F0-_LpN0LdShJB66iFigDlVBGh48agvj/view?usp=sharing' ,
+        description: ' Ficha de desarrollo para la especialidad (a desarrollar por todos) ',
+        downloadLink: 'https://drive.google.com/uc?export=download&id=1F0-_LpN0LdShJB66iFigDlVBGh48agvj' ,
         target: '_blank',// Reemplaza con el enlace real de descarga
     },
     {
         id: 3,
         logo: 'logosEspecialidades/03.png', // Reemplaza con tu logo real
         title: 'ENVOLTORIO (HM 070)',
-        description: '" Descarga la ficha de desarollo para la especialidad " (Exclusivamente SECRETARIOS de Unidad)',
+        description: ' Ficha de desarrollo (Secretario e Intendente de Unidad).',
         downloadLink: '#' ,// Reemplaza con el enlace real de descarga
         target: '_blank',
     },
@@ -31,7 +31,7 @@ const carouselData = [
         id: 4,
         logo: 'logosEspecialidades/04.png', // Reemplaza con tu logo real
         title: 'MARCADO DE BIBLIA (AM 019)',
-        description: '" Descarga la ficha de desarollo para la especialidad (Exlusivamente CAPELLANES de Unidad) "',
+        description: ' Ficha de desarrollo (Capellán y Comunicador de Unidad) ',
         downloadLink: '#', // Reemplaza con el enlace real de descarga
         target: '_blank',
     },
@@ -39,7 +39,7 @@ const carouselData = [
         id: 5,
         logo: 'logosEspecialidades/05.png', // Reemplaza con tu logo real
         title: 'PRIMEROS AUXILIOS BÁSICO (CS 003)',
-        description: '" Descarga la ficha de desarollo para la especialidad (Exclusivamente CAMILLEROS de unidad) "',
+        description: ' Ficha de desarrollo (Capitán y Camillero de Unidad) ',
         downloadLink: '#', // Reemplaza con el enlace real de descarga
         target: '_blank',
     },
@@ -47,7 +47,7 @@ const carouselData = [
         id: 6,
         logo: 'logosEspecialidades/06.png', // Reemplaza con tu logo real
         title: 'ARTE DE TRENZAR (HM 040)',
-        description: '" Descarga la ficha de desarollo para la especialidad (Exclusivamente HISTRION de unidad)"',
+        description: ' Ficha de desarrollo (Tesorero e Histrión de Unidad)',
         downloadLink: '#' ,// Reemplaza con el enlace real de descarga
         target: '_blank',
     }
