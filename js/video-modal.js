@@ -7,7 +7,7 @@ const LOCAL_VIDEO_CONFIG = {
     // Configuración del video
     options: {
         autoplay: true,
-        muted: false, // Cambiado a false para permitir el sonido
+        muted: true, // Cambiado a false para permitir el sonido
         loop: false,
         controls: false, // Usaremos controles personalizados
         preload: 'metadata'
