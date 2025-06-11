@@ -1,0 +1,205 @@
+ /* Sección del contador (debajo de la imagen) */
+ .countdown-section {
+     width: 100%;
+     min-height: 100vh;
+     /* Asegura que tenga al menos 100vh de alto */
+     background: linear-gradient(135deg, #0f1419, #1a1a2e, #16213e);
+     /* Fondo oscuro */
+     position: relative;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     padding: 4rem 2rem;
+     z-index: 10;
+     /* Asegura que esté por encima de las partículas */
+ }
+
+ /* Información del evento */
+ .event-info {
+     margin-bottom: 4rem;
+     max-width: 800px;
+     text-align: center;
+ }
+
+ .event-details {
+     color: #ffaa00;
+     font-size: clamp(1rem, 2.5vw, 1.4rem);
+     font-weight: 300;
+     line-height: 1.8;
+     margin-bottom: 2rem;
+     text-shadow:
+         0 0 10px rgba(255, 170, 0, 0.6),
+         1px 1px 2px rgba(0, 0, 0, 0.8);
+ }
+
+ /* Contenedor del contador */
+ .countdown {
+     display: grid;
+     grid-template-columns: repeat(4, 1fr);
+     /* 4 columnas iguales */
+     gap: 2rem;
+     /* Espacio entre unidades */
+     width: 100%;
+     max-width: 800px;
+     margin: 2rem auto 4rem;
+ }
+
+ /* Cada unidad de tiempo (Días, Horas, Minutos, Segundos) */
+ .time-unit {
+     background: linear-gradient(145deg,
+             rgba(0, 20, 40, 0.95),
+             rgba(0, 30, 60, 0.9));
+     /* Fondo degradado con transparencia */
+     backdrop-filter: blur(20px);
+     /* Efecto de desenfoque */
+     border: 2px solid rgba(255, 170, 0, 0.7);
+     /* Borde naranja */
+     border-radius: 15px;
+     padding: 2rem 1rem;
+     position: relative;
+     overflow: hidden;
+     box-shadow:
+         0 10px 30px rgba(0, 0, 0, 0.5),
+         inset 0 1px 0 rgba(255, 255, 255, 0.1);
+     /* Sombra y brillo interno */
+     transition: all 0.3s ease;
+     /* Transición suave en hover */
+     min-height: 120px;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+ }
+
+ /* Efecto hover en las unidades de tiempo */
+ .time-unit:hover {
+     transform: translateY(-8px) scale(1.05);
+     /* Se levanta y agranda */
+     border-color: rgba(255, 170, 0, 1);
+     box-shadow:
+         0 15px 40px rgba(255, 170, 0, 0.4),
+         inset 0 1px 0 rgba(255, 255, 255, 0.2);
+ }
+
+ /* Efecto de brillo interior en las unidades de tiempo */
+ .time-unit::before {
+     content: '';
+     position: absolute;
+     top: 0;
+     left: -100%;
+     width: 100%;
+     height: 100%;
+     background: linear-gradient(90deg,
+             transparent,
+             rgba(255, 255, 255, 0.2),
+             transparent);
+     /* Degradado blanco transparente */
+     animation: shine 4s linear infinite;
+     /* Animación de brillo que se mueve */
+ }
+
+ /* Animación para el brillo interior */
+ @keyframes shine {
+     0% {
+         left: -100%;
+     }
+
+     100% {
+         left: 100%;
+     }
+ }
+
+ /* Número de la unidad de tiempo */
+ .time-number {
+     font-size: clamp(2.5rem, 6vw, 4rem);
+     font-weight: 900;
+     color: #fff;
+     display: block;
+     text-shadow:
+         0 0 20px rgba(255, 255, 255, 0.8),
+         0 0 40px rgba(255, 170, 0, 0.6);
+     animation: numberGlow 2s ease-in-out infinite alternate;
+     /* Animación de brillo en números */
+     line-height: 1;
+ }
+
+ /* Animación de brillo para los números */
+ @keyframes numberGlow {
+     0% {
+         color: #fff;
+         text-shadow:
+             0 0 20px rgba(255, 255, 255, 0.8),
+             0 0 40px rgba(255, 170, 0, 0.6);
+     }
+
+     100% {
+         color: #ffaa00;
+         text-shadow:
+             0 0 30px rgba(255, 170, 0, 1),
+             0 0 60px rgba(255, 170, 0, 0.8);
+     }
+ }
+
+ /* Etiqueta de la unidad de tiempo (Días, Horas, etc.) */
+ .time-label {
+     font-size: clamp(0.8rem, 2vw, 1.1rem);
+     color: #ffaa00;
+     text-transform: uppercase;
+     font-weight: 700;
+     letter-spacing: 1px;
+     margin-top: 0.8rem;
+     text-shadow:
+         0 0 8px rgba(255, 170, 0, 0.8),
+         1px 1px 2px rgba(0, 0, 0, 0.8);
+ }
+ /* Media Queries para responsividad - MÓVIL */
+ @media (max-width: 768px) {
+     
+     
+
+     .countdown-section {
+         padding: 3rem 1rem;
+     }
+
+     .countdown {
+         grid-template-columns: repeat(2, 1fr);
+         /* 2 columnas en móvil */
+         gap: 1.5rem;
+         max-width: 400px;
+     }
+
+     .time-unit {
+         min-height: 100px;
+         padding: 1.5rem 0.8rem;
+     } 
+     
+ }
+
+ @media (max-width: 480px) {
+     .countdown {
+         grid-template-columns: repeat(2, 1fr);
+         gap: 1rem;
+         max-width: 350px;
+     }
+
+     .time-unit {
+         min-height: 90px;
+         padding: 1.2rem 0.6rem;
+     }
+
+     
+ }
+
+ /* Mejoras para pantallas grandes */
+ @media (min-width: 1200px) {
+     .countdown {
+         max-width: 1000px;
+         gap: 3rem;
+     }
+
+     .time-unit {
+         min-height: 140px;
+         padding: 2.5rem 1.5rem;
+     }
+ }

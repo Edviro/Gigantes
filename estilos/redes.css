@@ -1,0 +1,95 @@
+/* Sección de redes sociales */
+ .social-media {
+     margin: 3rem 0;
+     display: flex;
+     justify-content: center;
+     gap: 2rem;
+     /* Espacio entre iconos */
+ }
+
+ /* Enlaces de redes sociales */
+ .social-link {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     width: 70px;
+     height: 70px;
+     background: linear-gradient(145deg,
+             rgba(255, 170, 0, 0.1),
+             rgba(255, 170, 0, 0.2));
+     /* Fondo degradado transparente */
+     border: 2px solid rgba(255, 170, 0, 0.6);
+     border-radius: 50%;
+     /* Circular */
+     color: #ffaa00;
+     font-size: 28px;
+     text-decoration: none;
+     transition: all 0.3s ease;
+     backdrop-filter: blur(10px);
+     /* Desenfoque */
+     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+ }
+
+ /* Efecto hover en enlaces de redes sociales */
+ .social-link:hover {
+     transform: translateY(-5px) scale(1.15);
+     /* Se levanta y agranda */
+     background: linear-gradient(145deg,
+             rgba(255, 170, 0, 0.2),
+             rgba(255, 170, 0, 0.3));
+     border-color: rgba(255, 170, 0, 1);
+     box-shadow: 0 10px 30px rgba(255, 170, 0, 0.5);
+     color: #fff;
+ }
+
+ /* Estilos para los iconos SVG (Instagram, Facebook) */
+ .icon-instagram,
+ .icon-facebook {
+     width: 32px;
+     height: 32px;
+     fill: currentColor;
+     /* Usa el color del texto del padre */
+ }
+
+  /* Animación de parpadeo para el mensaje final */
+ @keyframes finalBlink {
+     0% {
+         opacity: 0.8;
+         transform: scale(1);
+     }
+
+     100% {
+         opacity: 1;
+         transform: scale(1.1);
+     }
+ }
+
+ 
+ /* Media Queries para responsividad - MÓVIL */
+ @media (max-width: 768px) {
+
+     .social-media {
+         gap: 1.5rem;
+     }
+
+     .social-link {
+         width: 60px;
+         height: 60px;
+         font-size: 24px;
+     }
+
+     .icon-instagram,
+     .icon-facebook {
+         width: 28px;
+         height: 28px;
+     }
+ }
+
+ @media (max-width: 480px) {
+     .social-link {
+         width: 55px;
+         height: 55px;
+         font-size: 22px;
+     }
+ }
+

@@ -1,0 +1,325 @@
+ /* Importar fuente Orbitron desde Google Fonts */
+ @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+ /* Reseteo básico de estilos */
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
+
+ /* Estilos generales del cuerpo */
+ body {
+     font-family: 'Orbitron', monospace;
+     /* Fuente futurista */
+     background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+     /* Fondo degradado oscuro */
+     overflow-x: hidden;
+     /* Evita scroll horizontal */
+     position: relative;
+     /* Para el posicionamiento de partículas */
+ }
+
+ /* Partículas de fondo animadas */
+ .particles {
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     overflow: hidden;
+     z-index: 1;
+     /* Detrás de todo */
+     pointer-events: none;
+     /* No interfieren con clics */
+ }
+
+ .particle {
+     position: absolute;
+     width: 2px;
+     height: 2px;
+     background: rgba(255, 255, 255, 0.3);
+     /* Blancas, semitransparentes */
+     animation: float 6s linear infinite;
+     /* Animación de flotar */
+ }
+
+ /* Animación para las partículas */
+ @keyframes float {
+     0% {
+         transform: translateY(100vh) rotate(0deg);
+         opacity: 0;
+     }
+
+     /* Empieza abajo, invisible */
+     10% {
+         opacity: 1;
+     }
+
+     /* Se hace visible */
+     90% {
+         opacity: 1;
+     }
+
+     /* Permanece visible */
+     100% {
+         transform: translateY(-100px) rotate(360deg);
+         opacity: 0;
+     }
+
+     /* Termina arriba, invisible, rota */
+ }
+
+ /* Sección principal de la imagen (Hero Section) */
+ .hero-section {
+     width: 100%;
+     height: 100vh;
+     /* Ocupa toda la altura de la ventana */
+     position: relative;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     /* Alinea el contenido al centro vertical */
+     align-items: center;
+     overflow: hidden;
+     padding: 0;
+     /* Elimina padding que podría mover el contenido */
+ }
+
+ /* Imagen de fondo del Hero Section */
+ .background-image {
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background-image: url('../imagenes/V01Corre.avif');
+     /* Ruta de la imagen */
+     background-size: cover;
+     /* Cubre todo el espacio */
+     background-position: center;
+     /* Centra la imagen */
+     background-repeat: no-repeat;
+     filter: brightness(0.8) saturate(1.1) drop-shadow(0 0 30px rgba(255, 165, 0, 0.3));
+     /* Filtros y sombra para efecto */
+     animation: backgroundGlow 4s ease-in-out infinite alternate;
+     /* Animación de brillo */
+     z-index: 2;
+     /* Debajo del contenido */
+ }
+
+ /* Animación de brillo para la imagen de fondo */
+ @keyframes backgroundGlow {
+     0% {
+         filter: brightness(0.8) saturate(1.1) drop-shadow(0 0 30px rgba(255, 165, 0, 0.3));
+     }
+
+     100% {
+         filter: brightness(0.9) saturate(1.2) drop-shadow(0 0 50px rgba(255, 165, 0, 0.5));
+     }
+ }
+
+ /* Capa superpuesta sutil para la imagen */
+ .hero-overlay {
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: linear-gradient(to bottom,
+             rgba(0, 0, 0, 0.1) 0%,
+             rgba(0, 0, 0, 0.2) 50%,
+             rgba(0, 0, 0, 0.4) 100%);
+     /* Degradado oscuro */
+     z-index: 3;
+     /* Encima de la imagen */
+ }
+
+ /* Contenido superpuesto en la imagen (título, subtítulo, fecha) */
+ .hero-content {
+     position: relative;
+     z-index: 4;
+     /* Encima de todo */
+     text-align: center;
+     max-width: 90%;
+     /* Ajuste para móviles */
+     padding: 2rem;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     height: 100%;
+     /* Para centrar el contenido dentro de hero-section */
+ }
+
+ /* Título principal - Ahora para el logo */
+ .hero-title {
+     width: clamp(200px, 60vw, 600px);
+     /* Tamaño responsivo para el logo */
+     height: auto;
+     /* Mantener la proporción */
+     max-width: 100%;
+     /* Asegura que no se desborde */
+     margin-bottom: 1rem;
+     animation: logoPulse 3s ease-in-out infinite alternate;
+     /* Animación de pulsación para el logo */
+ }
+
+ /* Animación de pulsación para el logo (si es un PNG/SVG) */
+ @keyframes logoPulse {
+     0% {
+         transform: scale(1);
+         filter: drop-shadow(0 0 30px rgba(255, 170, 0, 0.8));
+     }
+
+     100% {
+         transform: scale(1.05);
+         filter: drop-shadow(0 0 50px rgba(255, 170, 0, 1));
+     }
+ }
+
+ /* Subtítulo */
+ .hero-subtitle {
+     color: #ffaa00;
+     /* Color naranja brillante */
+     font-size: clamp(1.2rem, 4vw, 2.5rem);
+     font-weight: 700;
+     margin-bottom: 1rem;
+     text-shadow:
+         0 0 20px rgba(255, 170, 0, 1),
+         2px 2px 4px rgba(0, 0, 0, 0.9);
+ }
+
+ /* Fecha del evento */
+ .hero-date {
+     color: #fff;
+     font-size: clamp(1rem, 3vw, 1.8rem);
+     font-weight: 400;
+     text-shadow:
+         0 0 15px rgba(255, 255, 255, 0.8),
+         2px 2px 4px rgba(0, 0, 0, 0.8);
+ }
+
+
+
+ 
+ /* Mensaje final cuando el contador llega a cero */
+ .final-message {
+     display: none;
+     /* Oculto por defecto */
+     font-size: clamp(2.5rem, 8vw, 5rem);
+     color: #ffaa00;
+     font-weight: 900;
+     text-transform: uppercase;
+     text-shadow:
+         0 0 40px rgba(255, 170, 0, 1),
+         0 0 80px rgba(255, 170, 0, 0.8),
+         3px 3px 6px rgba(0, 0, 0, 0.8);
+     animation: finalBlink 1.5s ease-in-out infinite alternate;
+     /* Animación de parpadeo */
+     text-align: center;
+     padding: 2rem;
+ }
+
+ /* Animación de parpadeo para el mensaje final */
+ @keyframes finalBlink {
+     0% {
+         opacity: 0.8;
+         transform: scale(1);
+     }
+
+     100% {
+         opacity: 1;
+         transform: scale(1.1);
+     }
+ }
+
+ 
+ /* Media Queries para responsividad - MÓVIL */
+ @media (max-width: 768px) {
+     .hero-section {
+         height: 100vh;
+         /* Se mantiene en 100vh */
+         padding-bottom: 0;
+         /* Elimina padding */
+     }
+
+     .hero-content {
+         padding: 1rem;
+     }
+
+     .countdown-section {
+         padding: 3rem 1rem;
+     }
+
+     .countdown {
+         grid-template-columns: repeat(2, 1fr);
+         /* 2 columnas en móvil */
+         gap: 1.5rem;
+         max-width: 400px;
+     }
+
+     .time-unit {
+         min-height: 100px;
+         padding: 1.5rem 0.8rem;
+     }
+
+     .social-media {
+         gap: 1.5rem;
+     }
+
+     .social-link {
+         width: 60px;
+         height: 60px;
+         font-size: 24px;
+     }
+
+     .icon-instagram,
+     .icon-facebook {
+         width: 28px;
+         height: 28px;
+     }
+
+     .additional-info {
+         margin: 1.5rem;
+         padding: 2rem;
+     }
+
+     .info-details {
+         grid-template-columns: 1fr;
+         /* Una sola columna en móvil */
+         gap: 1rem;
+     }
+ }
+
+ @media (max-width: 480px) {
+     .countdown {
+         grid-template-columns: repeat(2, 1fr);
+         gap: 1rem;
+         max-width: 350px;
+     }
+
+     .time-unit {
+         min-height: 90px;
+         padding: 1.2rem 0.6rem;
+     }
+
+     .social-link {
+         width: 55px;
+         height: 55px;
+         font-size: 22px;
+     }
+ }
+
+ /* Mejoras para pantallas grandes */
+ @media (min-width: 1200px) {
+     .countdown {
+         max-width: 1000px;
+         gap: 3rem;
+     }
+
+     .time-unit {
+         min-height: 140px;
+         padding: 2.5rem 1.5rem;
+     }
+ }

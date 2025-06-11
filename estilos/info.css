@@ -1,0 +1,106 @@
+/* Información adicional del evento */
+ .additional-info {
+     margin: 2rem auto 0;
+     padding: 2.5rem;
+     background: rgba(0, 20, 40, 0.8);
+     /* Fondo con transparencia */
+     backdrop-filter: blur(15px);
+     border: 1px solid rgba(255, 170, 0, 0.3);
+     border-radius: 15px;
+     max-width: 900px;
+     width: 100%;
+ }
+
+ .info-title {
+     color: #ffaa00;
+     font-size: clamp(1.4rem, 3.5vw, 2rem);
+     font-weight: 700;
+     margin-bottom: 1.5rem;
+     text-align: center;
+     text-shadow: 0 0 15px rgba(255, 170, 0, 0.8);
+ }
+
+ .info-content {
+     color: #fff;
+     font-size: clamp(1rem, 2.2vw, 1.2rem);
+     line-height: 1.8;
+     text-align: center;
+     margin-bottom: 2rem;
+ }
+
+ /* Detalles de la información adicional (ubicación, duración, inscripción) */
+ .info-details {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+     /* Columnas responsivas */
+     gap: 1.5rem;
+     margin-top: 1.5rem;
+ }
+
+ .detail-item {
+     background: rgba(255, 170, 0, 0.1);
+     /* Fondo transparente */
+     padding: 1.5rem;
+     border-radius: 12px;
+     border: 1px solid rgba(255, 170, 0, 0.3);
+     text-align: center;
+     transition: all 0.3s ease;
+ }
+
+ /* Efecto hover en detalles adicionales */
+ .detail-item:hover {
+     background: rgba(255, 170, 0, 0.15);
+     border-color: rgba(255, 170, 0, 0.5);
+     transform: translateY(-3px);
+     box-shadow: 0 8px 25px rgba(255, 170, 0, 0.2);
+ }
+
+ .detail-label {
+     color: #ffaa00;
+     font-size: 1rem;
+     font-weight: 700;
+     text-transform: uppercase;
+     margin-bottom: 0.8rem;
+ }
+
+ .detail-value {
+     color: #fff;
+     font-size: 1.1rem;
+     font-weight: 400;
+ }
+
+ .detail-link {
+     color: #ffaa00;
+     text-decoration: none;
+     font-weight: 600;
+     transition: all 0.3s ease;
+     border-bottom: 1px dotted rgba(255, 170, 0, 0.5);
+ }
+
+ /* Efecto hover en enlaces de detalles */
+ .detail-link:hover {
+     color: #fff;
+     border-bottom-color: #fff;
+     text-shadow: 0 0 10px rgba(255, 170, 0, 0.8);
+ }
+
+ /* Media Queries para responsividad - MÓVIL */
+ @media (max-width: 768px) {
+     .hero-section {
+         height: 100vh;
+         /* Se mantiene en 100vh */
+         padding-bottom: 0;
+         /* Elimina padding */
+     }
+     .additional-info {
+         margin: 1.5rem;
+         padding: 2rem;
+     }
+
+     .info-details {
+         grid-template-columns: 1fr;
+         /* Una sola columna en móvil */
+         gap: 1rem;
+     }
+ }
+
