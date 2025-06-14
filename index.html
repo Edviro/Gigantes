@@ -7,9 +7,13 @@
     <title>Corra con los Gigantes</title>
     <link rel="icon" type="correLogo.avif" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="carousel.css">
-    <link rel="stylesheet" href="video-modal.css">
+    <link rel="stylesheet" href="estilos/styles.css">
+    <link rel="stylesheet" href="estilos/carousel.css">
+    <link rel="stylesheet" href="estilos/video-modal.css">
+    <link rel="stylesheet" href="estilos/contador.css">
+    <link rel="stylesheet" href="estilos/info.css">
+    <link rel="stylesheet" href="estilos/redes.css">
+    <link rel="stylesheet" href="estilos/boton.css">
 </head>
 
 <body>
@@ -19,24 +23,38 @@
         <div class="video-modal-content">
             <button class="video-modal-close" id="closeVideoModal"></button>
             <div class="video-container" id="videoContainer">
-                <!-- El video de Instagram se insertará aquí -->
+                
             </div>
         </div>
     </div>
 
     <div class="particles" id="particles"></div>
 
-    <section class="hero-section">
+    <!-- Botón de navegación flotante -->
+    <button class="nav-button" id="navButton">
+        <svg id="navIcon" viewBox="0 0 24 24">
+            <polyline points="6,9 12,15 18,9"></polyline>
+        </svg>
+    </button>
+
+    <section class="hero-section" id="heroSection">
         <div class="background-image"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <img src="correLogo.avif" alt="Logo Corra con los Gigantes" class="hero-title">
+            <img src="imagenes/correLogo.avif" alt="Logo Corra con los Gigantes" class="hero-title">
             <h2 class="hero-subtitle">El Encuentro Más esperado se Acerca</h2>
             <p class="hero-date">📅 22 de Junio 2025 - 6:00 AM</p>
+            
+            <!-- Botón de inscripción -->
+            <a href="https://docs.google.com/forms/d/1Nxykh0lB9g7N19_0WKPynNaDXd4mCaQLX0dRomocgKQ/viewform?edit_requested=true" 
+               target="_blank" 
+               class="cta-button">
+                🏃‍♂️ INSCRÍBETE YA
+            </a>
         </div>
     </section>
 
-    <section class="countdown-section">
+    <section class="countdown-section" id="countdownSection">
         <div class="event-info">
             <p class="event-details">
                 🏃‍♂️ Únete a la experiencia más emocionante del año<br>
@@ -141,10 +159,21 @@
             </div>
         </div>
     </section>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K6D8LJ4VRF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    <script src="script.js"></script>
-    <script src="carousel.js"></script>
-    <script src="video-modal.js"></script>
-</body>
+  gtag('config', 'G-K6D8LJ4VRF');
+</script>
+    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="3b261cf0-6c1c-42ba-91f5-9a6ab7d885d0" type="text/javascript" async></script>
+
+    <script src="js/script.js"></script>
+    <script src="js/carousel.js"></script>
+    <script src="js/video-modal.js"></script>
+    <script src="js/boton.js"></script>
+
 
 </html>

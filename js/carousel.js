@@ -8,7 +8,7 @@ const carouselData = [
         logo: 'logosEspecialidades/01.png', // Reemplaza con tu logo real
         title: 'ALIVIO DEL HAMBRE (AD 001)',
         description: 'Ficha de desarrollo para la especialidad (a desarrollar por todos) ',
-        downloadLink: '#', // Reemplaza con el enlace real de descarga,
+        downloadLink: 'https://drive.google.com/uc?export=download&id=1O6P1N1sdFMGjmyjy7GigTIuRE8KVNBm7', // Reemplaza con el enlace real de descarga,
         target: '_blank',
     },
     {

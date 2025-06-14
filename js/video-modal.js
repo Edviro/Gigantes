@@ -269,6 +269,18 @@ function showVideoModal() {
     // Prevenir scroll del body
     document.body.style.overflow = 'hidden';
     
+    // Restaurar la fuente del video si fue limpiada previamente
+    if (videoElement) {
+        const originalSrc = videoElement.getAttribute('data-original-src');
+        if (originalSrc && videoElement.src === '') {
+            videoElement.src = originalSrc;
+            videoElement.load();
+        } else if (videoElement.src === '') {
+            videoElement.src = LOCAL_VIDEO_CONFIG.videoSrc;
+            videoElement.load();
+        }
+    }
+    
     // Mostrar modal
     videoModal.style.display = 'flex';
     
@@ -317,10 +329,19 @@ function hideVideoModal() {
             videoElement.pause();
             console.log('Video pausado');
         }
+        
         // Detener completamente el video para evitar que el audio continúe
+        videoElement.pause();
         videoElement.currentTime = 0;
-        videoElement.src = ''; // Limpiar la fuente
-        videoElement.load(); // Recargar el elemento para detener completamente
+        
+        // Limpiar la fuente y recargar para detener completamente
+        const currentSrc = videoElement.src;
+        videoElement.src = '';
+        videoElement.load();
+        
+        // Guardar la fuente original para futuras reproducciones
+        videoElement.setAttribute('data-original-src', currentSrc);
+        
         console.log('Video detenido completamente');
     }
     
@@ -338,6 +359,12 @@ function hideVideoModal() {
     setTimeout(() => {
         if (videoModal) {
             videoModal.style.display = 'none';
+            
+            // Asegurarse de que el video esté completamente detenido
+            if (videoContainer) {
+                // Opcionalmente, podemos vaciar el contenedor para asegurar que el video se detenga
+                // videoContainer.innerHTML = '';
+            }
         }
     }, 300);
     
