@@ -32,7 +32,7 @@ const carouselData = [
         logo: 'logosEspecialidades/04.png', // Reemplaza con tu logo real
         title: 'MARCADO DE BIBLIA (AM 019)',
         description: ' Ficha de desarrollo  ',
-        downloadLink: 'https://drive.google.com/uc?export=download&id=1R9xAkUklTFMt5BWhYlSS00Bijr_u54Rz', // Reemplaza con el enlace real de descarga
+        downloadLink: 'https://drive.google.com/uc?export=download&id=12o9MfNtAxeLuPMDHEdyxzZUT_cPtPi2o', // Reemplaza con el enlace real de descarga
         target: '_blank',
     },
     {
