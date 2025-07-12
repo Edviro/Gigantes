@@ -7,7 +7,7 @@ const carouselData = [
         id: 1,
         logo: 'logosEspecialidades/01.png', // Reemplaza con tu logo real
         title: 'ALIVIO DEL HAMBRE (AD 001)',
-        description: 'Ficha de desarrollo para la especialidad (a desarrollar por todos) ',
+        description: 'Ficha de desarrollo para la especialidad  ',
         downloadLink: 'https://drive.google.com/uc?export=download&id=1O6P1N1sdFMGjmyjy7GigTIuRE8KVNBm7', // Reemplaza con el enlace real de descarga,
         target: '_blank',
     },
@@ -15,7 +15,7 @@ const carouselData = [
         id: 2,
         logo: 'logosEspecialidades/02.png', // Reemplaza con tu logo real
         title: 'IMPRENTA (AP 010)',
-        description: ' Ficha de desarrollo para la especialidad (a desarrollar por todos) ',
+        description: ' Ficha de desarrollo para la especialidad  ',
         downloadLink: 'https://drive.google.com/uc?export=download&id=1F0-_LpN0LdShJB66iFigDlVBGh48agvj' ,
         target: '_blank',// Reemplaza con el enlace real de descarga
     },
@@ -23,7 +23,7 @@ const carouselData = [
         id: 3,
         logo: 'logosEspecialidades/03.png', // Reemplaza con tu logo real
         title: 'ENVOLTORIO (HM 070)',
-        description: ' Ficha de desarrollo (Secretario e Intendente de Unidad).',
+        description: ' Ficha de desarrollo .',
         downloadLink: 'https://drive.google.com/uc?export=download&id=1DZJgXKKOTQZOAOBqnTVsHVrjFOu-5RWk' ,// Reemplaza con el enlace real de descarga
         target: '_blank',
     },
@@ -31,15 +31,15 @@ const carouselData = [
         id: 4,
         logo: 'logosEspecialidades/04.png', // Reemplaza con tu logo real
         title: 'MARCADO DE BIBLIA (AM 019)',
-        description: ' Ficha de desarrollo (Capellán y Comunicador de Unidad) ',
-        downloadLink: 'https://drive.google.com/uc?export=download&id=1Gl3JT-CIdMtwb33laikfOOHsEP3KNNyf', // Reemplaza con el enlace real de descarga
+        description: ' Ficha de desarrollo  ',
+        downloadLink: 'https://drive.google.com/uc?export=download&id=1R9xAkUklTFMt5BWhYlSS00Bijr_u54Rz', // Reemplaza con el enlace real de descarga
         target: '_blank',
     },
     {
         id: 5,
         logo: 'logosEspecialidades/05.png', // Reemplaza con tu logo real
         title: 'PRIMEROS AUXILIOS BÁSICO (CS 003)',
-        description: ' Ficha de desarrollo (Capitán y Camillero de Unidad) ',
+        description: ' Ficha de desarrollo  ',
         downloadLink: 'https://drive.google.com/uc?export=download&id=1uTrL0zV2XHoLFUG5SJ3U8jLRETAvDZXa', // Reemplaza con el enlace real de descarga
         target: '_blank',
     },
@@ -47,7 +47,7 @@ const carouselData = [
         id: 6,
         logo: 'logosEspecialidades/06.png', // Reemplaza con tu logo real
         title: 'ARTE DE TRENZAR (HM 040)',
-        description: ' Ficha de desarrollo (Tesorero e Histrión de Unidad)',
+        description: ' Ficha de desarrollo ',
         downloadLink: 'https://drive.google.com/uc?export=download&id=1SsceDU4HaFZgu0UCo9wTFP3wNNSjOwYL' ,// Reemplaza con el enlace real de descarga
         target: '_blank',
     }
