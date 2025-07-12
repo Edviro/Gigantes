@@ -24,7 +24,7 @@ const carouselData = [
         logo: 'logosEspecialidades/03.png', // Reemplaza con tu logo real
         title: 'ENVOLTORIO (HM 070)',
         description: ' Ficha de desarrollo .',
-        downloadLink: 'https://drive.google.com/uc?export=download&id=1DZJgXKKOTQZOAOBqnTVsHVrjFOu-5RWk' ,// Reemplaza con el enlace real de descarga
+        downloadLink: 'https://drive.google.com/uc?export=download&id=1ZL6B3fhJ2sHQNKCG01xL7xypfRUbeMB6' ,// Reemplaza con el enlace real de descarga
         target: '_blank',
     },
     {
