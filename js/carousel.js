@@ -48,7 +48,7 @@ const carouselData = [
         logo: 'logosEspecialidades/06.png', // Reemplaza con tu logo real
         title: 'ARTE DE TRENZAR (HM 040)',
         description: ' Ficha de desarrollo ',
-        downloadLink: 'https://drive.google.com/uc?export=download&id=1SsceDU4HaFZgu0UCo9wTFP3wNNSjOwYL' ,// Reemplaza con el enlace real de descarga
+        downloadLink: 'https://drive.google.com/uc?export=download&id=1W_ys2svzurpvZSiB0AbGoqCDhiFEIdUg' ,// Reemplaza con el enlace real de descarga
         target: '_blank',
     }
 ];
