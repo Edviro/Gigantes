@@ -24,7 +24,7 @@ const carouselData = [
         logo: 'logosEspecialidades/03.png', // Reemplaza con tu logo real
         title: 'ENVOLTORIO (HM 070)',
         description: ' Ficha de desarrollo .',
-        downloadLink: 'https://drive.google.com/uc?export=download&id=1ZL6B3fhJ2sHQNKCG01xL7xypfRUbeMB6' ,// Reemplaza con el enlace real de descarga
+        downloadLink: 'https://drive.google.com/uc?export=download&id=1aYnz-dBH3bXxwsKB-7ToLofGM_YMYvut' ,// Reemplaza con el enlace real de descarga
         target: '_blank',
     },
     {
@@ -32,7 +32,7 @@ const carouselData = [
         logo: 'logosEspecialidades/04.png', // Reemplaza con tu logo real
         title: 'MARCADO DE BIBLIA (AM 019)',
         description: ' Ficha de desarrollo  ',
-        downloadLink: 'https://drive.google.com/uc?export=download&id=12o9MfNtAxeLuPMDHEdyxzZUT_cPtPi2o', // Reemplaza con el enlace real de descarga
+        downloadLink: 'https://drive.google.com/uc?export=download&id=1VH681Q6W15S5Yjjf1ThALXrsuD8uzXK5', // Reemplaza con el enlace real de descarga
         target: '_blank',
     },
     {
@@ -48,7 +48,7 @@ const carouselData = [
         logo: 'logosEspecialidades/06.png', // Reemplaza con tu logo real
         title: 'ARTE DE TRENZAR (HM 040)',
         description: ' Ficha de desarrollo ',
-        downloadLink: 'https://drive.google.com/uc?export=download&id=1W_ys2svzurpvZSiB0AbGoqCDhiFEIdUg' ,// Reemplaza con el enlace real de descarga
+        downloadLink: 'https://drive.google.com/uc?export=download&id=1xlT2OB-2zqtL9tf8AixWDwSZfOrX6iG_' ,// Reemplaza con el enlace real de descarga
         target: '_blank',
     }
 ];
