@@ -40,7 +40,7 @@ const carouselData = [
         logo: 'logosEspecialidades/05.png', // Reemplaza con tu logo real
         title: 'PRIMEROS AUXILIOS BÁSICO (CS 003)',
         description: ' Ficha de desarrollo  ',
-        downloadLink: 'https://drive.google.com/uc?export=download&id=1uTrL0zV2XHoLFUG5SJ3U8jLRETAvDZXa', // Reemplaza con el enlace real de descarga
+        downloadLink: 'https://drive.google.com/uc?export=download&id=1KaLe9KV82P1-r3eK7EtwOlMhY3VbZNw_', // Reemplaza con el enlace real de descarga
         target: '_blank',
     },
     {
